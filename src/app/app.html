@@ -1,0 +1,11 @@
+<div class="app-container">
+  <!-- Public Site Navigation (only show on non-admin routes) -->
+  <app-header *ngIf="!isAdminRoute()"></app-header>
+  
+  <main class="main-content" [class.admin-content]="isAdminRoute()">
+    <router-outlet></router-outlet>
+  </main>
+
+  <!-- Public Site Footer (only show on non-admin routes) -->
+  <app-footer *ngIf="!isAdminRoute()"></app-footer>
+</div>

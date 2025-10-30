@@ -1,0 +1,48 @@
+/* App-specific styles - Dark theme */
+.app-container {
+  @apply min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  @apply flex-1;
+  padding-top: 4rem; /* Account for fixed header */
+}
+
+/* Admin content styling - no top padding since admin nav handles spacing */
+.main-content.admin-content {
+  padding-top: 0;
+}
+
+/* Ensure proper spacing for sections */
+.section {
+  @apply py-16 px-4;
+}
+
+.container {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(45deg, #3b82f6, #6366f1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(45deg, #2563eb, #4f46e5);
+}
