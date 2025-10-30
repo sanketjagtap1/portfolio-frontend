@@ -521,7 +521,7 @@ export class BlogDetailsPageComponent implements OnInit {
     if (image.startsWith('http')) {
       return image;
     }
-    return `http://dev-api.technootales.in/v1/cloud/file/${image}`;
+    return `https://dev-api.technootales.in/v1/cloud/file/${image}`;
   }
 
   formatDate(dateString: string): string {

@@ -362,7 +362,7 @@ export class BlogComponent implements OnInit {
       return image;
     }
     // If it's a file ID, construct the API URL
-    return `http://dev-api.technootales.in/v1/cloud/file/${image}`;
+    return `https://dev-api.technootales.in/v1/cloud/file/${image}`;
   }
 
   formatDate(dateString: string): string {

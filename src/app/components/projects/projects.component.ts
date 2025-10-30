@@ -460,7 +460,7 @@ export class ProjectsComponent implements OnInit {
       return image;
     }
     // If it's a file ID, construct the API URL
-    return `http://dev-api.technootales.in/v1/cloud/file/${image}`;
+    return `https://dev-api.technootales.in/v1/cloud/file/${image}`;
   }
 
   getProjectMainImage(project: Project): string | null {

@@ -270,7 +270,7 @@ export class AboutComponent implements OnInit {
   getImageUrl(icon: string): string {
     if (!icon) return '';
     if (icon.startsWith('http')) return icon;
-    return `http://dev-api.technootales.in/v1/cloud/file/${icon}`;
+    return `https://dev-api.technootales.in/v1/cloud/file/${icon}`;
   }
 
   private loadFallback() {

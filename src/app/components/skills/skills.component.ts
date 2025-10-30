@@ -341,7 +341,7 @@ export class SkillsComponent implements OnInit {
       return icon;
     }
     // If it's a file ID, construct the API URL
-    return `http://dev-api.technootales.in/v1/cloud/file/${icon}`;
+    return `https://dev-api.technootales.in/v1/cloud/file/${icon}`;
   }
 
   isEmoji(text: string): boolean {

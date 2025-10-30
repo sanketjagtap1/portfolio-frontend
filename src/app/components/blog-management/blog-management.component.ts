@@ -458,7 +458,7 @@ export class BlogManagementComponent implements OnInit {
         const formData = new FormData();
         formData.append('file', this.selectedFile);
         
-        const uploadResponse: any = await this.http.post('http://dev-api.technootales.in/v1/cloud/file', formData).toPromise();
+        const uploadResponse: any = await this.http.post('https://dev-api.technootales.in/v1/cloud/file', formData).toPromise();
         featuredImageUrl = uploadResponse.file._id; // Store the file ID returned by the API
       }
 
@@ -578,6 +578,6 @@ export class BlogManagementComponent implements OnInit {
       return image;
     }
     // If it's a file ID, construct the API URL
-    return `http://dev-api.technootales.in/v1/cloud/file/${image}`;
+    return `https://dev-api.technootales.in/v1/cloud/file/${image}`;
   }
 }

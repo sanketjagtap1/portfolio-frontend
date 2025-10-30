@@ -449,7 +449,7 @@ export class ServicesManagementComponent implements OnInit {
     const formData = new FormData();
     formData.append('file', file);
 
-    this.http.post('http://dev-api.technootales.in/v1/cloud/file', formData)
+    this.http.post('https://dev-api.technootales.in/v1/cloud/file', formData)
       .pipe(
         timeout(30000),
         catchError(error => {
@@ -472,7 +472,7 @@ export class ServicesManagementComponent implements OnInit {
 
   getImageUrl(imageId: string): string {
     if (!imageId) return '';
-    return `http://dev-api.technootales.in/v1/cloud/file/${imageId}`;
+    return `https://dev-api.technootales.in/v1/cloud/file/${imageId}`;
   }
 
   formatPriceINR(price?: string): string {

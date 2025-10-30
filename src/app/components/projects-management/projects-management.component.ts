@@ -600,7 +600,7 @@ export class ProjectsManagementComponent implements OnInit {
       const formData = new FormData();
       formData.append('file', this.newProjectImage);
 
-      const response = await this.http.post<any>('http://dev-api.technootales.in/v1/cloud/file', formData).toPromise();
+      const response = await this.http.post<any>('https://dev-api.technootales.in/v1/cloud/file', formData).toPromise();
       
       if (response && response.file && response.file._id) {
         const newImage: ProjectImage = {
@@ -653,7 +653,7 @@ export class ProjectsManagementComponent implements OnInit {
         const formData = new FormData();
         formData.append('file', this.selectedFeaturedFile);
         
-        const uploadResponse: any = await this.http.post('http://dev-api.technootales.in/v1/cloud/file', formData).toPromise();
+        const uploadResponse: any = await this.http.post('https://dev-api.technootales.in/v1/cloud/file', formData).toPromise();
         featuredImageUrl = uploadResponse.file._id;
       }
 
@@ -662,7 +662,7 @@ export class ProjectsManagementComponent implements OnInit {
         const formData = new FormData();
         formData.append('file', this.selectedFile);
         
-        const uploadResponse: any = await this.http.post('http://dev-api.technootales.in/v1/cloud/file', formData).toPromise();
+        const uploadResponse: any = await this.http.post('https://dev-api.technootales.in/v1/cloud/file', formData).toPromise();
         imageUrl = uploadResponse.file._id;
       }
 
@@ -773,6 +773,6 @@ export class ProjectsManagementComponent implements OnInit {
       return image;
     }
     // If it's a file ID, construct the API URL
-    return `http://dev-api.technootales.in/v1/cloud/file/${image}`;
+    return `https://dev-api.technootales.in/v1/cloud/file/${image}`;
   }
 }

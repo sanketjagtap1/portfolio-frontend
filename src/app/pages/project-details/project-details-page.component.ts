@@ -598,7 +598,7 @@ export class ProjectDetailsPageComponent implements OnInit {
 
   getImageUrl(imageId: string): string {
     if (!imageId) return '';
-    return `http://dev-api.technootales.in/v1/cloud/file/${imageId}`;
+    return `https://dev-api.technootales.in/v1/cloud/file/${imageId}`;
   }
 
   openImageModal(image: ProjectImage, index: number) {
