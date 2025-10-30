@@ -5,6 +5,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { AdminNavComponent } from '../admin-nav/admin-nav.component';
 import { RichTextEditorComponent } from '../rich-text-editor/rich-text-editor.component';
+import { environment } from '../../../environments/environment';
 
 interface ProjectImage {
   id: string;
@@ -543,7 +544,7 @@ export class ProjectsManagementComponent implements OnInit {
   }
 
   loadProjects() {
-    this.http.get<Project[]>('http://localhost:3000/api/portfolio/projects')
+    this.http.get<Project[]>(`${environment.apiBaseUrl}/portfolio/projects`)
       .subscribe({
         next: (projects) => {
           this.projects = projects;
@@ -682,7 +683,7 @@ export class ProjectsManagementComponent implements OnInit {
 
       if (this.editingProject) {
         // Update existing project
-        this.http.put(`http://localhost:3000/api/portfolio/admin/projects/${this.editingProject.id}`, projectData, { headers })
+        this.http.put(`${environment.apiBaseUrl}/portfolio/admin/projects/${this.editingProject.id}`, projectData, { headers })
           .subscribe({
             next: () => {
               this.loadProjects();
@@ -695,7 +696,7 @@ export class ProjectsManagementComponent implements OnInit {
           });
       } else {
         // Add new project
-        this.http.post('http://localhost:3000/api/portfolio/admin/projects', projectData, { headers })
+        this.http.post(`${environment.apiBaseUrl}/portfolio/admin/projects`, projectData, { headers })
           .subscribe({
             next: () => {
               this.loadProjects();
@@ -729,7 +730,7 @@ export class ProjectsManagementComponent implements OnInit {
     const token = localStorage.getItem('admin_token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    this.http.delete(`http://localhost:3000/api/portfolio/admin/projects/${projectId}`, { headers })
+    this.http.delete(`${environment.apiBaseUrl}/portfolio/admin/projects/${projectId}`, { headers })
       .subscribe({
         next: () => {
           this.loadProjects();

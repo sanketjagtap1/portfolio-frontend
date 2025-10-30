@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { timeout, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 interface Blog {
   id: number;
@@ -301,7 +302,7 @@ export class BlogComponent implements OnInit {
     this.hasError = false;
     this.currentPage = page;
 
-    this.http.get<BlogResponse>(`http://localhost:3000/api/blog?page=${page}&limit=6`)
+    this.http.get<BlogResponse>(`${environment.apiBaseUrl}/blog?page=${page}&limit=6`)
       .pipe(
         timeout(10000), // 10 second timeout
         catchError(error => {

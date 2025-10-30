@@ -4,6 +4,7 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AdminNavComponent } from '../admin-nav/admin-nav.component';
 import { timeout, catchError, of } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface Service {
   id: number;
@@ -308,7 +309,7 @@ export class ServicesManagementComponent implements OnInit {
     order: 0
   };
 
-  private apiUrl = 'http://localhost:3000/api/portfolio/admin';
+  private apiUrl = `${environment.apiBaseUrl}/portfolio/admin`;
 
   constructor(
     private http: HttpClient,

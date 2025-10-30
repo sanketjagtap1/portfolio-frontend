@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { AdminNavComponent } from '../admin-nav/admin-nav.component';
+import { environment } from '../../../environments/environment';
 
 interface Skill {
   id: number;
@@ -261,7 +262,7 @@ export class SkillsManagementComponent implements OnInit {
   }
 
   loadSkills() {
-    this.http.get<Skill[]>('http://localhost:3000/api/portfolio/skills')
+    this.http.get<Skill[]>(`${environment.apiBaseUrl}/portfolio/skills`)
       .subscribe({
         next: (skills) => {
           this.skills = skills;
@@ -326,7 +327,7 @@ export class SkillsManagementComponent implements OnInit {
 
       if (this.editingSkill) {
         // Update existing skill
-        this.http.put(`http://localhost:3000/api/portfolio/admin/skills/${this.editingSkill.id}`, skillData, { headers })
+        this.http.put(`${environment.apiBaseUrl}/portfolio/admin/skills/${this.editingSkill.id}`, skillData, { headers })
           .subscribe({
             next: () => {
               this.loadSkills();
@@ -339,7 +340,7 @@ export class SkillsManagementComponent implements OnInit {
           });
       } else {
         // Add new skill
-        this.http.post('http://localhost:3000/api/portfolio/admin/skills', skillData, { headers })
+        this.http.post(`${environment.apiBaseUrl}/portfolio/admin/skills`, skillData, { headers })
           .subscribe({
             next: () => {
               this.loadSkills();
@@ -369,7 +370,7 @@ export class SkillsManagementComponent implements OnInit {
     const token = localStorage.getItem('admin_token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    this.http.delete(`http://localhost:3000/api/portfolio/admin/skills/${skillId}`, { headers })
+    this.http.delete(`${environment.apiBaseUrl}/portfolio/admin/skills/${skillId}`, { headers })
       .subscribe({
         next: () => {
           this.loadSkills();

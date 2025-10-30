@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AdminNavComponent } from '../admin-nav/admin-nav.component';
+import { environment } from '../../../environments/environment';
 
 interface Experience {
   id?: number;
@@ -343,7 +344,7 @@ export class ExperienceManagementComponent implements OnInit {
     const token = localStorage.getItem('admin_token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     
-    this.http.get<Experience[]>('http://localhost:3000/api/portfolio/experience', { headers })
+    this.http.get<Experience[]>(`${environment.apiBaseUrl}/portfolio/experience`, { headers })
       .subscribe({
         next: (experiences) => {
           this.experiences = experiences;
@@ -403,7 +404,7 @@ export class ExperienceManagementComponent implements OnInit {
 
     if (this.editingExperience) {
       // Update existing experience
-      this.http.put(`http://localhost:3000/api/portfolio/admin/experience/${this.editingExperience.id}`, experienceData, { headers })
+      this.http.put(`${environment.apiBaseUrl}/portfolio/admin/experience/${this.editingExperience.id}`, experienceData, { headers })
         .subscribe({
           next: () => {
             this.loadExperiences();
@@ -416,7 +417,7 @@ export class ExperienceManagementComponent implements OnInit {
         });
     } else {
       // Add new experience
-      this.http.post('http://localhost:3000/api/portfolio/admin/experience', experienceData, { headers })
+      this.http.post(`${environment.apiBaseUrl}/portfolio/admin/experience`, experienceData, { headers })
         .subscribe({
           next: () => {
             this.loadExperiences();
@@ -436,7 +437,7 @@ export class ExperienceManagementComponent implements OnInit {
       const token = localStorage.getItem('admin_token');
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
       
-      this.http.delete(`http://localhost:3000/api/portfolio/admin/experience/${id}`, { headers })
+      this.http.delete(`${environment.apiBaseUrl}/portfolio/admin/experience/${id}`, { headers })
         .subscribe({
           next: () => {
             this.loadExperiences();

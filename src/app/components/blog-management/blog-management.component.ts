@@ -5,6 +5,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { AdminNavComponent } from '../admin-nav/admin-nav.component';
 import { RichTextEditorComponent } from '../rich-text-editor/rich-text-editor.component';
+import { environment } from '../../../environments/environment';
 
 interface BlogPost {
   id: number;
@@ -399,7 +400,7 @@ export class BlogManagementComponent implements OnInit {
   }
 
   loadPosts() {
-    this.http.get<{blogs: BlogPost[]}>('http://localhost:3000/api/blog?status=all')
+    this.http.get<{blogs: BlogPost[]}>(`${environment.apiBaseUrl}/blog?status=all`)
       .subscribe({
         next: (response) => {
           this.posts = response.blogs;
@@ -472,7 +473,7 @@ export class BlogManagementComponent implements OnInit {
 
       if (this.editingPost) {
         // Update existing post
-        this.http.put(`http://localhost:3000/api/blog/${this.editingPost.id}`, postData, { headers })
+        this.http.put(`${environment.apiBaseUrl}/blog/${this.editingPost.id}`, postData, { headers })
           .subscribe({
             next: () => {
               this.loadPosts();
@@ -485,7 +486,7 @@ export class BlogManagementComponent implements OnInit {
           });
       } else {
         // Add new post
-        this.http.post('http://localhost:3000/api/blog', postData, { headers })
+        this.http.post(`${environment.apiBaseUrl}/blog`, postData, { headers })
           .subscribe({
             next: () => {
               this.loadPosts();
@@ -518,7 +519,7 @@ export class BlogManagementComponent implements OnInit {
     const token = localStorage.getItem('admin_token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    this.http.delete(`http://localhost:3000/api/blog/${postId}`, { headers })
+    this.http.delete(`${environment.apiBaseUrl}/blog/${postId}`, { headers })
       .subscribe({
         next: () => {
           this.loadPosts();
@@ -537,7 +538,7 @@ export class BlogManagementComponent implements OnInit {
       published: !post.published
     };
 
-    this.http.put(`http://localhost:3000/api/blog/${post.id}`, updateData, { headers })
+    this.http.put(`${environment.apiBaseUrl}/blog/${post.id}`, updateData, { headers })
       .subscribe({
         next: () => {
           this.loadPosts();

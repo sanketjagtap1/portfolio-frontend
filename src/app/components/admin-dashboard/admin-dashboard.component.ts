@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { timeout, catchError, of } from 'rxjs';
 import { AdminNavComponent } from '../admin-nav/admin-nav.component';
+import { environment } from '../../../environments/environment';
 
 interface AdminUser {
   id: number;
@@ -313,7 +314,7 @@ export class AdminDashboardComponent implements OnInit {
     };
     
     // Load skills count (public endpoint)
-    this.http.get('http://localhost:3000/api/portfolio/skills')
+    this.http.get(`${environment.apiBaseUrl}/portfolio/skills`)
       .subscribe({
         next: (skills: any) => {
           this.stats.skills = Array.isArray(skills) ? skills.length : 0;
@@ -328,7 +329,7 @@ export class AdminDashboardComponent implements OnInit {
       });
 
     // Load projects count (public endpoint)
-    this.http.get('http://localhost:3000/api/portfolio/projects')
+    this.http.get(`${environment.apiBaseUrl}/portfolio/projects`)
       .subscribe({
         next: (projects: any) => {
           this.stats.projects = Array.isArray(projects) ? projects.length : 0;
@@ -343,7 +344,7 @@ export class AdminDashboardComponent implements OnInit {
       });
 
     // Load experience count (public endpoint)
-    this.http.get('http://localhost:3000/api/portfolio/experience')
+    this.http.get(`${environment.apiBaseUrl}/portfolio/experience`)
       .subscribe({
         next: (experience: any) => {
           this.stats.experience = Array.isArray(experience) ? experience.length : 0;
@@ -358,7 +359,7 @@ export class AdminDashboardComponent implements OnInit {
       });
 
     // Load blogs count (public endpoint)
-    this.http.get('http://localhost:3000/api/blog')
+    this.http.get(`${environment.apiBaseUrl}/blog`)
       .subscribe({
         next: (response: any) => {
           this.stats.blogs = response.blogs?.length || 0;
@@ -373,7 +374,7 @@ export class AdminDashboardComponent implements OnInit {
       });
 
     // Load services count (public endpoint)
-    this.http.get('http://localhost:3000/api/portfolio/services')
+    this.http.get(`${environment.apiBaseUrl}/portfolio/services`)
       .subscribe({
         next: (response: any) => {
           this.stats.services = Array.isArray(response) ? response.length : 0;
