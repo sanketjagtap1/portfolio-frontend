@@ -72,11 +72,14 @@ import { timeout, catchError, of } from 'rxjs';
                 <!-- Skill Header -->
                 <div class="flex items-center gap-3 mb-4">
                   <div class="w-10 h-10 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-xl flex items-center justify-center text-lg group-hover:scale-105 transition-transform duration-300">
-                    <img *ngIf="skill.icon && !isEmoji(skill.icon)" 
-                         [src]="getImageUrl(skill.icon)" 
+                    <img *ngIf="skill.icon && !isEmoji(skill.icon) && !hasIconFailed(skill)"
+                         [src]="getImageUrl(skill.icon)"
                          [alt]="skill.name + ' icon'"
-                         class="w-6 h-6 object-contain">
-                    <span *ngIf="!skill.icon || isEmoji(skill.icon)">{{ skill.icon || '💻' }}</span>
+                         class="w-6 h-6 object-contain"
+                         (error)="onIconError(skill)">
+                    <span *ngIf="skill.icon && isEmoji(skill.icon)">{{ skill.icon }}</span>
+                    <span *ngIf="!skill.icon || (!isEmoji(skill.icon) && hasIconFailed(skill))"
+                          class="text-sm font-bold text-blue-100">{{ getInitial(skill) }}</span>
                   </div>
                   <div class="flex-1 min-w-0">
                     <h3 class="text-sm font-semibold text-white truncate group-hover:text-blue-200 transition-colors duration-300">
@@ -190,7 +193,8 @@ export class SkillsComponent implements OnInit {
   skills: Skill[] = [];
   selectedCategory = 'all';
   isLoading = true;
-  categories = ['all', 'frontend', 'backend', 'database', 'cloud', 'tools'];
+  categories = ['all', 'frontend', 'backend', 'mobile', 'database', 'cloud', 'tools'];
+  failedIcons = new Set<string>();
 
   constructor(private portfolioService: PortfolioService, private cdr: ChangeDetectorRef) {}
 
@@ -288,6 +292,7 @@ export class SkillsComponent implements OnInit {
       'all': '🌟',
       'frontend': '🎨',
       'backend': '⚙️',
+      'mobile': '📱',
       'database': '🗄️',
       'cloud': '☁️',
       'tools': '🔧'
@@ -300,6 +305,7 @@ export class SkillsComponent implements OnInit {
       'all': 'All Skills',
       'frontend': 'Frontend',
       'backend': 'Backend',
+      'mobile': 'Mobile',
       'database': 'Database',
       'cloud': 'Cloud & DevOps',
       'tools': 'Tools'
@@ -343,5 +349,24 @@ export class SkillsComponent implements OnInit {
     // Simple check to see if the text is an emoji (contains emoji characters)
     const emojiRegex = /[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/u;
     return emojiRegex.test(text);
+  }
+
+  // --- Icon fallback: when an icon image is missing/broken, show the initial ---
+  onIconError(skill: Skill): void {
+    this.failedIcons.add(this.skillKey(skill));
+    this.cdr.detectChanges();
+  }
+
+  hasIconFailed(skill: Skill): boolean {
+    return this.failedIcons.has(this.skillKey(skill));
+  }
+
+  getInitial(skill: Skill): string {
+    return (skill?.name || '?').trim().charAt(0).toUpperCase();
+  }
+
+  private skillKey(skill: Skill): string {
+    const id = (skill as any)?.id;
+    return id != null ? 'id:' + id : 'name:' + (skill?.name || '');
   }
 }
