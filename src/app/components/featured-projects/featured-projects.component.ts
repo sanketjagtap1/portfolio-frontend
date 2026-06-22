@@ -78,13 +78,22 @@ import { environment } from '../../../environments/environment';
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
                       </svg>
                     </a>
-                    <a *ngIf="project.liveUrl" [href]="project.liveUrl" target="_blank" rel="noopener noreferrer"
-                       class="text-sm text-sky-300 hover:text-sky-200 font-medium flex items-center gap-1 transition-colors duration-300">
-                      Live
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                      </svg>
-                    </a>
+                    <div class="flex items-center gap-4">
+                      <a *ngIf="project.downloadUrl" [href]="project.downloadUrl" download
+                         class="text-sm text-green-300 hover:text-green-200 font-medium flex items-center gap-1 transition-colors duration-300">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                        </svg>
+                        APK
+                      </a>
+                      <a *ngIf="project.liveUrl" [href]="project.liveUrl" target="_blank" rel="noopener noreferrer"
+                         class="text-sm text-sky-300 hover:text-sky-200 font-medium flex items-center gap-1 transition-colors duration-300">
+                        Live
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                        </svg>
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>

@@ -85,6 +85,7 @@ export interface Project {
   technologies: string[];
   githubUrl?: string;
   liveUrl?: string;
+  downloadUrl?: string;
   status: 'completed' | 'in-progress' | 'planned';
   featured: boolean;
   order: number;

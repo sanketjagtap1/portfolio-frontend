@@ -152,6 +152,19 @@ import { environment } from '../../../environments/environment';
                     </svg>
                     <span>Live Demo</span>
                   </a>
+                  <a
+                    *ngIf="project.downloadUrl"
+                    [href]="project.downloadUrl"
+                    download
+                    class="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl font-medium shadow-lg hover:shadow-green-500/25 transition-all duration-300 hover:scale-105 group"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="group-hover:scale-110 transition-transform duration-200">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                      <polyline points="7 10 12 15 17 10"/>
+                      <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    <span>Download APK</span>
+                  </a>
              <button
                (click)="navigateToProjectDetails(project.id)"
                class="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-cyan-500/20 to-sky-500/20 text-cyan-200 rounded-xl font-medium border border-cyan-400/30 hover:from-cyan-500/40 hover:to-sky-500/40 hover:border-cyan-400/50 transition-all duration-300 hover:scale-105 group"

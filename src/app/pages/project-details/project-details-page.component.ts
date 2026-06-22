@@ -19,6 +19,7 @@ export interface ProjectDetails {
   description: string;
   githubUrl?: string;
   liveUrl?: string;
+  downloadUrl?: string;
   technologies: string[];
   images: ProjectImage[];
   featuredImage?: string;
@@ -119,7 +120,23 @@ export interface ProjectDetails {
                     </svg>
                     <span>Live Demo</span>
                   </a>
+
+                  <a
+                    *ngIf="project.downloadUrl"
+                    [href]="project.downloadUrl"
+                    download
+                    class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg hover:from-green-600 hover:to-emerald-600 transition-all duration-200 font-medium shadow-lg hover:shadow-xl"
+                  >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    <span>Download APK</span>
+                  </a>
                 </div>
+
+                <p *ngIf="project.downloadUrl" class="text-xs text-blue-200/70 mt-3">
+                  Android only. After downloading, open the file and allow "Install from unknown sources" if prompted.
+                </p>
               </div>
             </div>
           </div>
