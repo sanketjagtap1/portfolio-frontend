@@ -100,6 +100,18 @@ import { Router, RouterModule } from '@angular/router';
               </svg>
               Testimonials
             </a>
+
+            <a
+              routerLink="/admin/messages"
+              routerLinkActive="active"
+              class="px-4 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-slate-700/50 transition-colors duration-200 flex items-center gap-2 font-medium"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 4h16v12H5.17L4 17.17V4z"/>
+                <path d="M8 9h8M8 12h5"/>
+              </svg>
+              Leads
+            </a>
           </div>
 
           <!-- Right Side Actions -->
@@ -232,6 +244,19 @@ import { Router, RouterModule } from '@angular/router';
                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
               </svg>
               Testimonials
+            </a>
+
+            <a
+              routerLink="/admin/messages"
+              routerLinkActive="active"
+              (click)="closeMobileMenu()"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-slate-700/50 transition-colors duration-200 font-medium"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 4h16v12H5.17L4 17.17V4z"/>
+                <path d="M8 9h8M8 12h5"/>
+              </svg>
+              Leads
             </a>
 
             <div class="border-t border-gray-200 pt-3 mt-3">

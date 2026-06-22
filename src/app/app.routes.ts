@@ -16,6 +16,7 @@ import { ServicesManagementComponent } from './components/services-management/se
 import { BlogDetailsPageComponent } from './pages/blog-details/blog-details-page.component';
 import { ReviewPageComponent } from './pages/review/review-page.component';
 import { TestimonialsManagementComponent } from './components/testimonials-management/testimonials-management.component';
+import { MessagesManagementComponent } from './components/messages-management/messages-management.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent, title: 'Sanket Jagtap - Home' },
@@ -37,5 +38,6 @@ export const routes: Routes = [
   { path: 'admin/blog', component: BlogManagementComponent, title: 'Blog Management' },
   { path: 'admin/services', component: ServicesManagementComponent, title: 'Services Management' },
   { path: 'admin/testimonials', component: TestimonialsManagementComponent, title: 'Testimonials Management' },
+  { path: 'admin/messages', component: MessagesManagementComponent, title: 'Leads & Messages' },
   { path: '**', redirectTo: '' } // Redirect to home for any unknown routes
 ];
