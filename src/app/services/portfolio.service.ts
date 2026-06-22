@@ -106,6 +106,7 @@ export interface Testimonial {
 }
 
 export interface TestimonialSubmission {
+  token: string;
   name: string;
   content: string;
   position?: string;
@@ -244,7 +245,14 @@ export class PortfolioService {
     );
   }
 
-  // Submit a review (public)
+  // Validate a review invite token (public)
+  validateReviewInvite(token: string): Observable<{ valid: boolean; label?: string | null }> {
+    return this.http.get<{ valid: boolean; label?: string | null }>(`${this.apiUrl}/review-invites/${token}`).pipe(
+      catchError(() => of({ valid: false }))
+    );
+  }
+
+  // Submit a review (public, requires a valid invite token)
   submitTestimonial(review: TestimonialSubmission): Observable<any> {
     return this.http.post(`${this.apiUrl}/testimonials`, review);
   }

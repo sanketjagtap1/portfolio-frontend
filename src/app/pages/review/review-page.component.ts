@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { RouterModule, ActivatedRoute } from '@angular/router';
 import { PortfolioService, TestimonialSubmission } from '../../services/portfolio.service';
 
 @Component({
@@ -23,16 +23,28 @@ import { PortfolioService, TestimonialSubmission } from '../../services/portfoli
           <p class="text-blue-200">Share your experience working with Sanket. Your review appears after a quick approval.</p>
         </div>
 
-        <!-- Success state -->
-        <div *ngIf="submitted" class="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-2xl p-10 border border-white/20 text-center">
+        <!-- Validating the link -->
+        <div *ngIf="state === 'checking'" class="text-center py-16 text-blue-200">Verifying your review link…</div>
+
+        <!-- Invalid / missing / used link -->
+        <div *ngIf="state === 'invalid'" class="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-2xl p-10 border border-white/20 text-center">
+          <div class="text-5xl mb-4">🔒</div>
+          <h2 class="text-2xl font-bold text-white mb-2">This review link isn't valid</h2>
+          <p class="text-blue-100 mb-2">Reviews are by invitation only. This link is invalid, has expired, or has already been used.</p>
+          <p class="text-blue-300/70 text-sm mb-6">If you'd like to leave a review, please ask Sanket for a personal review link.</p>
+          <a routerLink="/" class="inline-flex items-center px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-xl transition-all">Back to site</a>
+        </div>
+
+        <!-- Success -->
+        <div *ngIf="state === 'submitted'" class="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-2xl p-10 border border-white/20 text-center">
           <div class="text-5xl mb-4">🎉</div>
           <h2 class="text-2xl font-bold text-white mb-2">Thank you!</h2>
           <p class="text-blue-100 mb-6">{{ successMessage }}</p>
           <a routerLink="/" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-cyan-600 transition-all">Back to site</a>
         </div>
 
-        <!-- Form -->
-        <form *ngIf="!submitted" (ngSubmit)="submit()" #f="ngForm"
+        <!-- Form (only for a valid invite) -->
+        <form *ngIf="state === 'valid'" (ngSubmit)="submit()" #f="ngForm"
               class="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-2xl p-8 border border-white/20 space-y-5">
 
           <div>
@@ -96,14 +108,27 @@ import { PortfolioService, TestimonialSubmission } from '../../services/portfoli
   `,
   styles: []
 })
-export class ReviewPageComponent {
-  model: TestimonialSubmission = { name: '', content: '', position: '', company: '', email: '', rating: null };
+export class ReviewPageComponent implements OnInit {
+  state: 'checking' | 'valid' | 'invalid' | 'submitted' = 'checking';
+  token = '';
+  model: Omit<TestimonialSubmission, 'token'> = { name: '', content: '', position: '', company: '', email: '', rating: null };
   submitting = false;
-  submitted = false;
   error = '';
   successMessage = 'Your review has been submitted and will appear once approved.';
 
-  constructor(private portfolioService: PortfolioService) {}
+  constructor(private portfolioService: PortfolioService, private route: ActivatedRoute, private cdr: ChangeDetectorRef) {}
+
+  ngOnInit() {
+    this.token = this.route.snapshot.queryParamMap.get('token') || '';
+    if (!this.token) {
+      this.state = 'invalid';
+      return;
+    }
+    this.portfolioService.validateReviewInvite(this.token).subscribe(res => {
+      this.state = res && res.valid ? 'valid' : 'invalid';
+      this.cdr.detectChanges();
+    });
+  }
 
   submit() {
     this.error = '';
@@ -112,6 +137,7 @@ export class ReviewPageComponent {
 
     this.submitting = true;
     const payload: TestimonialSubmission = {
+      token: this.token,
       name: this.model.name.trim(),
       content: this.model.content.trim(),
       position: this.model.position?.trim() || undefined,
@@ -123,12 +149,19 @@ export class ReviewPageComponent {
     this.portfolioService.submitTestimonial(payload).subscribe({
       next: (res: any) => {
         this.submitting = false;
-        this.submitted = true;
+        this.state = 'submitted';
         if (res?.message) this.successMessage = res.message;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         this.submitting = false;
+        if (err?.status === 403) {
+          this.state = 'invalid';
+          this.cdr.detectChanges();
+          return;
+        }
         this.error = err?.error?.errors?.[0]?.msg || err?.error?.error || 'Something went wrong. Please try again.';
+        this.cdr.detectChanges();
       }
     });
   }

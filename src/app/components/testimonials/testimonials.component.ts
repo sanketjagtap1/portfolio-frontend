@@ -64,15 +64,6 @@ import { PortfolioService, Testimonial } from '../../services/portfolio.service'
           </div>
         </div>
 
-        <!-- Leave a review CTA -->
-        <div class="text-center mt-16" data-aos="fade-up" data-aos-delay="400">
-          <a routerLink="/review" class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-cyan-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
-            Leave a Review
-            <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-            </svg>
-          </a>
-        </div>
       </div>
     </section>
   `,

@@ -38,15 +38,15 @@ export class App implements OnInit {
         this.checkRoute();
       });
 
-    // Initialize AOS (Animate On Scroll) library
+    // Initialize AOS (Animate On Scroll) library.
+    // The module's API lives on the default export under ESM interop.
     if (typeof window !== 'undefined') {
-      import('aos').then(AOS => {
-        AOS.init({
-          duration: 1000,
-          once: true,
-          offset: 100
-        });
-      });
+      import('aos').then(mod => {
+        const AOS: any = (mod as any).default || mod;
+        if (AOS && typeof AOS.init === 'function') {
+          AOS.init({ duration: 1000, once: true, offset: 100 });
+        }
+      }).catch(() => {});
     }
   }
 
