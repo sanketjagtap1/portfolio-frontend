@@ -14,6 +14,8 @@ import { BlogManagementComponent } from './components/blog-management/blog-manag
 import { ServicesComponent } from './components/services/services.component';
 import { ServicesManagementComponent } from './components/services-management/services-management.component';
 import { BlogDetailsPageComponent } from './pages/blog-details/blog-details-page.component';
+import { ReviewPageComponent } from './pages/review/review-page.component';
+import { TestimonialsManagementComponent } from './components/testimonials-management/testimonials-management.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent, title: 'Sanket Jagtap - Home' },
@@ -24,6 +26,7 @@ export const routes: Routes = [
   { path: 'projects/:id', component: ProjectDetailsPageComponent, title: 'Project Details' },
   { path: 'services', component: ServicesComponent, title: 'Our Services' },
   { path: 'contact', component: ContactPageComponent, title: 'Contact Me' },
+  { path: 'review', component: ReviewPageComponent, title: 'Leave a Review' },
   { path: 'blog', component: HomeComponent, title: 'Blog & Articles' }, // Blog will be shown on home page for now
   { path: 'blog/:slug', component: BlogDetailsPageComponent, title: 'Blog Post' },
   { path: 'admin/login', component: AdminLoginComponent, title: 'Admin Login' },
@@ -33,5 +36,6 @@ export const routes: Routes = [
   { path: 'admin/experience', component: ExperienceManagementComponent, title: 'Experience Management' },
   { path: 'admin/blog', component: BlogManagementComponent, title: 'Blog Management' },
   { path: 'admin/services', component: ServicesManagementComponent, title: 'Services Management' },
+  { path: 'admin/testimonials', component: TestimonialsManagementComponent, title: 'Testimonials Management' },
   { path: '**', redirectTo: '' } // Redirect to home for any unknown routes
 ];

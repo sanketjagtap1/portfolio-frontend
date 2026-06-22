@@ -403,42 +403,8 @@ export class ProjectsComponent implements OnInit {
   }
 
   private loadFallbackData() {
-    this.projects = [
-      {
-        id: 1,
-        title: 'AlgoETF - Automated Trading Platform',
-        description: 'Real-time automated trading platform with multi-broker integration for maximizing trading profits.',
-        shortDescription: 'Designed and developed a comprehensive automated trading platform that integrates with multiple brokers to execute trades based on market conditions and predefined algorithms.',
-        technologies: ['Angular', 'Node.js', 'Express.js', 'Redis', 'WebSockets', 'MySQL', 'AWS', 'GitHub Actions'],
-        githubUrl: 'https://github.com/sanketjagtap/algo-etf',
-        liveUrl: 'https://algo-etf-demo.com',
-        status: 'completed',
-        featured: true,
-        order: 0,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        images: [
-          {
-            id: 'sample1',
-            url: 'sample1',
-            alt: 'AlgoETF Dashboard Overview',
-            caption: 'Main dashboard showing trading analytics and portfolio performance'
-          },
-          {
-            id: 'sample2',
-            url: 'sample2',
-            alt: 'Trading Algorithm Configuration',
-            caption: 'Algorithm configuration interface for setting up trading strategies'
-          },
-          {
-            id: 'sample3',
-            url: 'sample3',
-            alt: 'Real-time Market Data',
-            caption: 'Live market data feed with real-time price updates'
-          }
-        ]
-      }
-    ];
+    // No hardcoded fallback data; projects come from the API.
+    this.projects = [];
   }
 
   formatDate(dateString: string): string {

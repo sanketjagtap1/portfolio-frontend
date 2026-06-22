@@ -92,6 +92,28 @@ export interface Project {
   updatedAt: string;
 }
 
+export interface Testimonial {
+  id: number;
+  name: string;
+  position?: string;
+  company?: string;
+  content: string;
+  avatar?: string;
+  rating?: number;
+  featured?: boolean;
+  approved?: boolean;
+  createdAt?: string;
+}
+
+export interface TestimonialSubmission {
+  name: string;
+  content: string;
+  position?: string;
+  company?: string;
+  email?: string;
+  rating?: number | null;
+}
+
 export interface Education {
   degree: string;
   institution: string;
@@ -210,6 +232,21 @@ export class PortfolioService {
         return of([]);
       })
     );
+  }
+
+  // Get approved testimonials (public)
+  getTestimonials(): Observable<Testimonial[]> {
+    return this.http.get<Testimonial[]>(`${this.apiUrl}/testimonials`).pipe(
+      catchError(error => {
+        console.error('Error fetching testimonials:', error);
+        return of([]);
+      })
+    );
+  }
+
+  // Submit a review (public)
+  submitTestimonial(review: TestimonialSubmission): Observable<any> {
+    return this.http.post(`${this.apiUrl}/testimonials`, review);
   }
 
   // Get paginated blog posts

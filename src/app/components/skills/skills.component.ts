@@ -115,75 +115,6 @@ import { timeout, catchError, of } from 'rxjs';
           </div>
         </div>
         
-        <div data-aos="fade-up">
-          <div class="relative">
-            <div class="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-sky-500/20 rounded-2xl blur-xl"></div>
-            <div class="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-2xl p-12 border border-white/20 shadow-2xl">
-              <h3 class="text-2xl font-bold text-white text-center mb-12">Technical Focus Areas</h3>
-              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <div class="group">
-                  <div class="relative">
-                    <div class="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-sky-500/20 rounded-xl blur-lg group-hover:blur-xl transition-all duration-500"></div>
-                    <div class="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-xl p-6 border border-white/20 shadow-xl hover:shadow-blue-500/25 transition-all duration-500 hover:-translate-y-2 group-hover:border-blue-400/50">
-                      <div class="flex items-start gap-4">
-                        <div class="text-2xl flex-shrink-0">🎨</div>
-                        <div>
-                          <h4 class="text-lg font-semibold text-white mb-2">Frontend Development</h4>
-                          <p class="text-sm text-blue-200 leading-relaxed">Creating responsive, interactive user interfaces with modern frameworks</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                <div class="group">
-                  <div class="relative">
-                    <div class="absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-sky-500/20 rounded-xl blur-lg group-hover:blur-xl transition-all duration-500"></div>
-                    <div class="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-xl p-6 border border-white/20 shadow-xl hover:shadow-cyan-500/25 transition-all duration-500 hover:-translate-y-2 group-hover:border-cyan-400/50">
-                      <div class="flex items-start gap-4">
-                        <div class="text-2xl flex-shrink-0">⚙️</div>
-                        <div>
-                          <h4 class="text-lg font-semibold text-white mb-2">Backend Development</h4>
-                          <p class="text-sm text-blue-200 leading-relaxed">Building scalable APIs and server-side applications</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                <div class="group">
-                  <div class="relative">
-                    <div class="absolute inset-0 bg-gradient-to-r from-green-500/20 to-blue-500/20 rounded-xl blur-lg group-hover:blur-xl transition-all duration-500"></div>
-                    <div class="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-xl p-6 border border-white/20 shadow-xl hover:shadow-green-500/25 transition-all duration-500 hover:-translate-y-2 group-hover:border-green-400/50">
-                      <div class="flex items-start gap-4">
-                        <div class="text-2xl flex-shrink-0">🗄️</div>
-                        <div>
-                          <h4 class="text-lg font-semibold text-white mb-2">Database Design</h4>
-                          <p class="text-sm text-blue-200 leading-relaxed">Designing efficient database schemas and optimizing queries</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                <div class="group">
-                  <div class="relative">
-                    <div class="absolute inset-0 bg-gradient-to-r from-orange-500/20 to-red-500/20 rounded-xl blur-lg group-hover:blur-xl transition-all duration-500"></div>
-                    <div class="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-xl p-6 border border-white/20 shadow-xl hover:shadow-orange-500/25 transition-all duration-500 hover:-translate-y-2 group-hover:border-orange-400/50">
-                      <div class="flex items-start gap-4">
-                        <div class="text-2xl flex-shrink-0">☁️</div>
-                        <div>
-                          <h4 class="text-lg font-semibold text-white mb-2">Cloud & DevOps</h4>
-                          <p class="text-sm text-blue-200 leading-relaxed">Deploying and managing applications on cloud platforms</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   `,
@@ -232,48 +163,8 @@ export class SkillsComponent implements OnInit {
   }
 
   private loadFallbackData() {
-    // Fallback data in case API fails
-    this.skills = [
-      // Frontend
-      { name: 'Angular', level: 95, category: 'frontend', icon: '🅰️' },
-      { name: 'TypeScript', level: 90, category: 'frontend', icon: '🔷' },
-      { name: 'JavaScript (ES6+)', level: 90, category: 'frontend', icon: '🟨' },
-      { name: 'HTML5', level: 95, category: 'frontend', icon: '🌐' },
-      { name: 'CSS3', level: 90, category: 'frontend', icon: '🎨' },
-      { name: 'Bootstrap', level: 85, category: 'frontend', icon: '📱' },
-      { name: 'Material UI', level: 85, category: 'frontend', icon: '🎭' },
-      { name: 'RxJS', level: 80, category: 'frontend', icon: '⚡' },
-      { name: 'Ionic', level: 75, category: 'frontend', icon: '📱' },
-      
-      // Backend
-      { name: 'Node.js', level: 90, category: 'backend', icon: '🟢' },
-      { name: 'Express.js', level: 90, category: 'backend', icon: '⚡' },
-      { name: 'NestJS', level: 75, category: 'backend', icon: '🏗️' },
-      { name: 'WebSockets', level: 80, category: 'backend', icon: '🔌' },
-      { name: 'REST APIs', level: 90, category: 'backend', icon: '🌐' },
-      { name: 'Swagger', level: 75, category: 'backend', icon: '📚' },
-      
-      // Database
-      { name: 'PostgreSQL', level: 85, category: 'database', icon: '🐘' },
-      { name: 'MySQL', level: 85, category: 'database', icon: '🗄️' },
-      { name: 'MongoDB', level: 80, category: 'database', icon: '🍃' },
-      { name: 'Redis', level: 75, category: 'database', icon: '🔴' },
-      { name: 'Prisma', level: 70, category: 'database', icon: '🔧' },
-      { name: 'Sequelize', level: 70, category: 'database', icon: '⚙️' },
-      
-      // Cloud & DevOps
-      { name: 'AWS', level: 80, category: 'cloud', icon: '☁️' },
-      { name: 'Docker', level: 75, category: 'cloud', icon: '🐳' },
-      { name: 'GitHub Actions', level: 80, category: 'cloud', icon: '🔄' },
-      { name: 'Nginx', level: 70, category: 'cloud', icon: '🌐' },
-      { name: 'PM2', level: 75, category: 'cloud', icon: '⚡' },
-      
-      // Tools
-      { name: 'Git', level: 90, category: 'tools', icon: '📦' },
-      { name: 'Postman', level: 85, category: 'tools', icon: '📮' },
-      { name: 'Jest', level: 75, category: 'tools', icon: '🧪' },
-      { name: 'SonarQube', level: 70, category: 'tools', icon: '🔍' }
-    ];
+    // No hardcoded fallback data; skills come from the API.
+    this.skills = [];
   }
 
   get filteredSkills(): Skill[] {

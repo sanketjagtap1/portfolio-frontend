@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HeroComponent } from '../../components/hero/hero.component';
 import { AboutComponent } from '../../components/about/about.component';
-import { StatsComponent } from '../../components/stats/stats.component';
 import { FeaturedProjectsComponent } from '../../components/featured-projects/featured-projects.component';
 import { ServicesComponent } from '../../components/services/services.component';
 import { TestimonialsComponent } from '../../components/testimonials/testimonials.component';
@@ -12,11 +11,10 @@ import { BlogComponent } from '../../components/blog/blog.component';
   selector: 'app-home',
   standalone: true,
   imports: [
-    CommonModule, 
-    HeroComponent, 
-    AboutComponent, 
-    StatsComponent, 
-    FeaturedProjectsComponent, 
+    CommonModule,
+    HeroComponent,
+    AboutComponent,
+    FeaturedProjectsComponent,
     ServicesComponent,
     TestimonialsComponent,
     BlogComponent
@@ -25,7 +23,6 @@ import { BlogComponent } from '../../components/blog/blog.component';
     <div class="home-page">
       <app-hero></app-hero>
       <app-about></app-about>
-      <app-stats></app-stats>
       <app-services></app-services>
       <app-featured-projects></app-featured-projects>
       <app-blog></app-blog>
