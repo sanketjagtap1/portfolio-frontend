@@ -2,173 +2,72 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Import Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+/* ---- Fonts ----
+   Loaded via <link> in index.html (with preconnect) rather than a CSS @import,
+   so font discovery isn't serialized behind this stylesheet. */
 
-/* CSS Variables for consistent theming */
+/* ============================================================
+   Editorial dark design system
+   ============================================================ */
 :root {
-  /* Professional Color Palette */
-  --primary-color: #2563eb;
-  --primary-dark: #1d4ed8;
-  --primary-light: #3b82f6;
-  --secondary-color: #f59e0b;
-  --secondary-dark: #d97706;
-  --accent-color: #10b981;
-  --accent-dark: #059669;
-  
-  /* Text Colors */
-  --text-primary: #111827;
-  --text-secondary: #4b5563;
-  --text-light: #6b7280;
-  --text-muted: #9ca3af;
-  
-  /* Background Colors */
-  --bg-primary: #ffffff;
-  --bg-secondary: #f9fafb;
-  --bg-tertiary: #f3f4f6;
-  --bg-dark: #1f2937;
-  --bg-darker: #111827;
-  
-  /* Border Colors */
-  --border-color: #e5e7eb;
-  --border-light: #f3f4f6;
-  --border-dark: #374151;
-  
-  /* Spacing */
-  --spacing-xs: 0.25rem;
-  --spacing-sm: 0.5rem;
-  --spacing-md: 1rem;
-  --spacing-lg: 1.5rem;
-  --spacing-xl: 2rem;
-  --spacing-2xl: 3rem;
-  --spacing-3xl: 4rem;
-  --spacing-4xl: 6rem;
-  
-  /* Typography */
-  --font-size-xs: 0.75rem;
-  --font-size-sm: 0.875rem;
-  --font-size-base: 1rem;
-  --font-size-lg: 1.125rem;
-  --font-size-xl: 1.25rem;
-  --font-size-2xl: 1.5rem;
-  --font-size-3xl: 1.875rem;
-  
-  /* Border radius */
-  --radius-sm: 0.25rem;
-  --radius-md: 0.375rem;
-  --radius-lg: 0.5rem;
-  --radius-xl: 0.75rem;
-  --radius-full: 9999px;
-  
-  /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-  
-  /* Transitions */
-  --transition-fast: 150ms ease-in-out;
-  --transition-normal: 300ms ease-in-out;
-  --transition-slow: 500ms ease-in-out;
+  --canvas: #0a0a0b;
+  --surface: #141416;
+  --surface-2: #1c1c20;
+  --ink: #ededed;
+  --muted: #a1a1aa;
+  --faint: #71717a;
+  --line: #26262a;
+  --accent: #bef264;
+  --accent-ink: #0a0a0b;
 }
 
-/* Dark mode variables */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text-primary: #f9fafb;
-    --text-secondary: #d1d5db;
-    --text-light: #9ca3af;
-    --text-muted: #6b7280;
-    --bg-primary: #111827;
-    --bg-secondary: #1f2937;
-    --bg-tertiary: #374151;
-    --border-color: #374151;
-    --border-light: #4b5563;
-    --border-dark: #6b7280;
-  }
-}
-
-/* Professional gradient backgrounds */
-.gradient-primary {
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-}
-
-.gradient-secondary {
-  background: linear-gradient(135deg, var(--secondary-color), var(--secondary-dark));
-}
-
-.gradient-accent {
-  background: linear-gradient(135deg, var(--accent-color), var(--accent-dark));
-}
-
-.gradient-hero {
-  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
-}
-
-.gradient-section {
-  background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%);
-}
-
-/* Custom scrollbar (tuned for the dark theme) */
-::-webkit-scrollbar {
-  width: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: #0f172a; /* slate-900 */
-}
-
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #0ea5e9, #2563eb); /* sky-500 -> blue-600 */
-  border-radius: 8px;
-  border: 2px solid #0f172a;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #38bdf8, #3b82f6);
-}
-
-/* Firefox scrollbar */
-* {
-  scrollbar-color: #2563eb #0f172a;
-}
-
-/* Smooth scrolling */
 html {
   scroll-behavior: smooth;
 }
 
-/* Global styles */
 body {
   font-family: 'Inter', system-ui, sans-serif;
-  background-color: #020617; /* slate-950 — prevents white flash on a dark site */
-  color: #e2e8f0; /* slate-200 */
+  background-color: var(--canvas);
+  color: var(--ink);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
 }
 
-/* Accessible, consistent keyboard focus across the app */
+/* Headings use the display face */
+h1, h2, h3, h4 {
+  font-family: 'Space Grotesk', 'Inter', sans-serif;
+  letter-spacing: -0.02em;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: var(--canvas); }
+::-webkit-scrollbar-thumb {
+  background: #2e2e33;
+  border-radius: 8px;
+  border: 2px solid var(--canvas);
+}
+::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
+* { scrollbar-color: #2e2e33 var(--canvas); }
+
+/* Keyboard focus */
 :focus-visible {
-  outline: 2px solid #38bdf8; /* sky-400 */
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
   border-radius: 4px;
 }
 
-/* Polished text selection */
+/* Text selection */
 ::selection {
-  background: rgba(56, 189, 248, 0.3); /* sky-400 */
+  background: rgba(190, 242, 100, 0.25);
   color: #ffffff;
 }
 
-/* Respect reduced-motion preferences globally */
+/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-  *,
-  *::before,
-  *::after {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
@@ -176,55 +75,65 @@ body {
   }
 }
 
-.section {
-  padding: 5rem 0;
-}
+/* Layout helpers */
+.section { padding: 6rem 0; }
+@media (max-width: 768px) { .section { padding: 4rem 0; } }
 
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 1.5rem;
 }
 
-/* Custom components */
+/* ============================================================
+   Component helpers
+   ============================================================ */
 @layer components {
+  /* Mono section kicker: 01 — ABOUT */
+  .kicker {
+    @apply inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-accent;
+  }
+
   .btn-primary {
-    @apply bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300;
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-accent px-6 py-3 font-semibold text-accent-ink transition-all duration-200 hover:brightness-95 hover:-translate-y-0.5;
   }
-  
-  .btn-secondary {
-    @apply bg-white hover:bg-gray-50 text-primary-600 font-semibold py-3 px-6 rounded-lg border-2 border-primary-600 hover:border-primary-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300;
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-line bg-white/[0.02] px-6 py-3 font-semibold text-ink transition-all duration-200 hover:border-ink/40 hover:bg-white/[0.05];
   }
-  
-  .btn-outline {
-    @apply bg-transparent hover:bg-primary-600 text-primary-600 hover:text-white font-semibold py-3 px-6 rounded-lg border-2 border-primary-600 hover:border-primary-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300;
-  }
-  
+
+  /* Legacy aliases used in admin/older markup */
+  .btn-secondary { @apply btn-ghost; }
+  .btn-outline { @apply btn-ghost; }
+
   .card {
-    @apply bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 border border-gray-100;
+    @apply rounded-2xl border border-line bg-surface p-6 transition-colors duration-200;
   }
-  
+
+  .chip {
+    @apply inline-flex items-center rounded-md border border-line bg-white/[0.03] px-2.5 py-1 font-mono text-xs text-muted;
+  }
+
+  /* Big editorial section heading */
   .section-title {
-    @apply text-4xl md:text-5xl font-bold text-gray-900 text-center mb-16 relative;
-  }
-  
-  .section-title::after {
-    @apply absolute bottom-0 left-1/2 transform -translate-x-1/2 w-16 h-1 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full;
-    content: '';
+    @apply font-display text-3xl md:text-5xl font-semibold tracking-tightest text-ink;
   }
 }
 
-/* Global form element styling for dark theme */
+/* ============================================================
+   Global form elements (dark)
+   ============================================================ */
 input[type="text"],
 input[type="email"],
 input[type="password"],
 input[type="number"],
 input[type="url"],
+input[type="search"],
 textarea,
 select {
-  background-color: #334155 !important; /* slate-700 */
+  background-color: var(--surface-2) !important;
   color: #ffffff !important;
-  border-color: #475569 !important; /* slate-600 */
+  border-color: var(--line) !important;
 }
 
 input[type="text"]:focus,
@@ -232,34 +141,25 @@ input[type="email"]:focus,
 input[type="password"]:focus,
 input[type="number"]:focus,
 input[type="url"]:focus,
+input[type="search"]:focus,
 textarea:focus,
 select:focus {
-  border-color: #06b6d4 !important; /* cyan-500 */
-  box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.2) !important;
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 2px rgba(190, 242, 100, 0.18) !important;
 }
 
-input[type="text"]::placeholder,
-input[type="email"]::placeholder,
-input[type="password"]::placeholder,
-input[type="number"]::placeholder,
-input[type="url"]::placeholder,
+input::placeholder,
 textarea::placeholder {
-  color: #94a3b8 !important; /* slate-400 */
+  color: var(--faint) !important;
 }
 
 select option {
-  background-color: #334155 !important; /* slate-700 */
+  background-color: var(--surface-2) !important;
   color: #ffffff !important;
-}
-
-input[type="checkbox"],
-input[type="radio"] {
-  background-color: #334155 !important; /* slate-700 */
-  border-color: #475569 !important; /* slate-600 */
 }
 
 input[type="checkbox"]:checked,
 input[type="radio"]:checked {
-  background-color: #06b6d4 !important; /* cyan-500 */
-  border-color: #06b6d4 !important; /* cyan-500 */
+  background-color: var(--accent) !important;
+  border-color: var(--accent) !important;
 }

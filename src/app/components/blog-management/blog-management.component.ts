@@ -5,6 +5,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { AdminNavComponent } from '../admin-nav/admin-nav.component';
 import { RichTextEditorComponent } from '../rich-text-editor/rich-text-editor.component';
+import { IconComponent } from '../ui/icon.component';
 import { environment } from '../../../environments/environment';
 
 interface BlogPost {
@@ -25,257 +26,245 @@ interface BlogPost {
 @Component({
   selector: 'app-blog-management',
   standalone: true,
-  imports: [CommonModule, FormsModule, AdminNavComponent, RichTextEditorComponent],
+  imports: [CommonModule, FormsModule, AdminNavComponent, RichTextEditorComponent, IconComponent],
   template: `
-    <div class="min-h-screen bg-gradient-to-br from-slate-900 via-orange-900 to-red-900">
+    <div class="min-h-screen bg-canvas text-ink">
       <!-- Admin Navigation -->
       <app-admin-nav></app-admin-nav>
 
       <!-- Main Content -->
-      <main class="container mx-auto px-4 py-8">
+      <main class="mx-auto max-w-shell px-4 md:px-6 py-8 md:py-10">
         <!-- Page Header -->
         <div class="flex items-center justify-between mb-8">
           <div>
-            <h1 class="text-3xl font-bold text-white mb-2">Blog Management</h1>
-            <p class="text-orange-200">Create and manage blog posts to share your knowledge</p>
+            <span class="kicker mb-3">BLOG</span>
+            <h1 class="font-display text-3xl md:text-4xl font-semibold text-ink mt-3">Blog Management</h1>
+            <p class="text-muted mt-2">Create and manage blog posts to share your knowledge</p>
           </div>
-          <button 
+          <button
             (click)="showAddForm = true"
-            class="px-6 py-3 bg-orange-500 text-white rounded-xl hover:bg-orange-600 transition-all duration-300 flex items-center gap-2"
+            class="btn-primary !px-4 !py-2 text-sm"
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="12" y1="5" x2="12" y2="19"/>
-              <line x1="5" y1="12" x2="19" y2="12"/>
-            </svg>
+            <app-icon name="plus" [size]="20"></app-icon>
             New Post
           </button>
         </div>
         <!-- Add/Edit Form -->
         <div *ngIf="showAddForm" class="mb-8">
-          <div class="relative">
-            <div class="absolute inset-0 bg-gradient-to-r from-orange-500/20 to-red-500/20 rounded-2xl blur-lg"></div>
-            <div class="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-xl">
-              <h3 class="text-xl font-bold text-white mb-6">{{ editingPost ? 'Edit Blog Post' : 'Create New Blog Post' }}</h3>
-              
-              <form (ngSubmit)="savePost()" #postForm="ngForm" class="space-y-4">
-                <div>
-                  <label class="block text-sm font-semibold text-orange-200 mb-2">Title</label>
-                  <input 
-                    type="text" 
-                    [(ngModel)]="postFormData.title" 
-                    name="title"
-                    required
-                    class="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-400/20"
-                    placeholder="Enter blog post title"
-                  >
+          <div class="rounded-2xl border border-line bg-surface p-6">
+            <h3 class="font-display text-xl font-semibold text-ink mb-6">{{ editingPost ? 'Edit Blog Post' : 'Create New Blog Post' }}</h3>
+
+            <form (ngSubmit)="savePost()" #postForm="ngForm" class="space-y-4">
+              <div>
+                <label class="block text-xs font-mono uppercase tracking-[0.15em] text-faint mb-2">Title</label>
+                <input
+                  type="text"
+                  [(ngModel)]="postFormData.title"
+                  name="title"
+                  required
+                  class="w-full rounded-xl border border-line bg-surface2 px-4 py-3 text-ink"
+                  placeholder="Enter blog post title"
+                >
+              </div>
+
+              <div>
+                <label class="block text-xs font-mono uppercase tracking-[0.15em] text-faint mb-2">Excerpt</label>
+                <textarea
+                  [(ngModel)]="postFormData.excerpt"
+                  name="excerpt"
+                  rows="3"
+                  maxlength="500"
+                  class="w-full rounded-xl border border-line bg-surface2 px-4 py-3 text-ink"
+                  placeholder="Brief summary of the post (plain text, max 500 characters)..."
+                ></textarea>
+                <div class="text-xs text-faint mt-1">
+                  {{ (postFormData.excerpt || '').length }}/500 characters
                 </div>
-                
-                <div>
-                  <label class="block text-sm font-semibold text-orange-200 mb-2">Excerpt</label>
-                  <textarea 
-                    [(ngModel)]="postFormData.excerpt" 
-                    name="excerpt"
-                    rows="3"
-                    maxlength="500"
-                    class="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-400/20"
-                    placeholder="Brief summary of the post (plain text, max 500 characters)..."
-                  ></textarea>
-                  <div class="text-xs text-orange-300 mt-1">
-                    {{ (postFormData.excerpt || '').length }}/500 characters
-                  </div>
-                </div>
-                
-                <div>
-                  <label class="block text-sm font-semibold text-orange-200 mb-2">Content</label>
-                  <div class="mb-4">
-                    <div class="flex gap-2 mb-2">
-                      <button 
-                        type="button"
-                        (click)="showPreview = false"
-                        class="px-3 py-1 rounded-lg text-sm transition-all duration-300"
-                        [class]="!showPreview ? 'bg-orange-500 text-white' : 'bg-gray-500/20 text-gray-300 hover:bg-gray-500/40'"
-                      >
-                        Edit
-                      </button>
-                      <button 
-                        type="button"
-                        (click)="showPreview = true"
-                        class="px-3 py-1 rounded-lg text-sm transition-all duration-300"
-                        [class]="showPreview ? 'bg-orange-500 text-white' : 'bg-gray-500/20 text-gray-300 hover:bg-gray-500/40'"
-                      >
-                        Preview
-                      </button>
-                    </div>
-                  </div>
-                  
-                  <!-- Rich Text Editor -->
-                  <div *ngIf="!showPreview">
-                    <app-rich-text-editor
-                      [content]="postFormData.content || ''"
-                      [placeholder]="'Write your blog post content here...'"
-                      (contentChange)="onContentChange($event)"
-                    ></app-rich-text-editor>
-                  </div>
-                  
-                  <!-- Preview -->
-                  <div *ngIf="showPreview" class="bg-slate-700 rounded-lg p-6 border border-slate-600 min-h-[200px]">
-                    <div class="prose prose-lg max-w-none prose-invert" [innerHTML]="getPreviewContent()"></div>
-                  </div>
-                </div>
-                
-                <div>
-                  <label class="block text-sm font-semibold text-orange-200 mb-2">Tags (comma-separated)</label>
-                  <input 
-                    type="text" 
-                    [(ngModel)]="postFormData.tags" 
-                    name="tags"
-                    class="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-400/20"
-                    placeholder="web development, javascript, tutorial"
-                  >
-                </div>
-                
-                <div>
-                  <label class="block text-sm font-semibold text-orange-200 mb-2">Featured Image</label>
-                  <div class="space-y-3">
-                    <!-- File Upload Input -->
-                    <input 
-                      type="file" 
-                      #fileInput
-                      (change)="onFileSelected($event)"
-                      accept="image/*"
-                      class="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-xl text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-500 file:text-white hover:file:bg-orange-600 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-400/20"
+              </div>
+
+              <div>
+                <label class="block text-xs font-mono uppercase tracking-[0.15em] text-faint mb-2">Content</label>
+                <div class="mb-4">
+                  <div class="flex gap-2 mb-2">
+                    <button
+                      type="button"
+                      (click)="showPreview = false"
+                      class="rounded-full px-4 py-2 text-sm transition-colors"
+                      [class]="!showPreview ? 'bg-accent/10 text-accent border border-accent/30' : 'border border-line bg-white/[0.02] text-muted hover:bg-white/[0.05]'"
                     >
-                    
-                    <!-- Image Preview -->
-                    <div *ngIf="selectedImagePreview" class="mt-3">
-                      <p class="text-orange-200 text-sm mb-2">Preview:</p>
-                      <img [src]="selectedImagePreview" alt="Featured image preview" class="w-48 h-32 object-cover rounded-lg border border-white/20">
-                    </div>
-                    
-                    <!-- Current Image Display -->
-                    <div *ngIf="postFormData.featuredImage && !selectedImagePreview" class="mt-3">
-                      <p class="text-orange-200 text-sm mb-2">Current Featured Image:</p>
-                      <img [src]="getImageUrl(postFormData.featuredImage)" alt="Current featured image" class="w-48 h-32 object-cover rounded-lg border border-white/20">
-                    </div>
+                      Edit
+                    </button>
+                    <button
+                      type="button"
+                      (click)="showPreview = true"
+                      class="rounded-full px-4 py-2 text-sm transition-colors"
+                      [class]="showPreview ? 'bg-accent/10 text-accent border border-accent/30' : 'border border-line bg-white/[0.02] text-muted hover:bg-white/[0.05]'"
+                    >
+                      Preview
+                    </button>
                   </div>
                 </div>
-                
-                <div class="flex items-center gap-4">
-                  <label class="flex items-center gap-2">
-                    <input 
-                      type="checkbox" 
-                      [(ngModel)]="postFormData.published" 
-                      name="published"
-                      class="w-4 h-4 text-orange-500 bg-slate-700 border-slate-600 rounded focus:ring-orange-400"
-                    >
-                    <span class="text-orange-200">Publish immediately</span>
-                  </label>
+
+                <!-- Rich Text Editor -->
+                <div *ngIf="!showPreview">
+                  <app-rich-text-editor
+                    [content]="postFormData.content || ''"
+                    [placeholder]="'Write your blog post content here...'"
+                    (contentChange)="onContentChange($event)"
+                  ></app-rich-text-editor>
                 </div>
-                
-                <div class="flex gap-4">
-                  <button 
-                    type="submit" 
-                    class="px-6 py-3 bg-orange-500 text-white rounded-xl hover:bg-orange-600 transition-all duration-300"
-                    [disabled]="postForm.invalid || isLoading"
-                  >
-                    {{ isLoading ? 'Saving...' : (editingPost ? 'Update Post' : 'Create Post') }}
-                  </button>
-                  <button 
-                    type="button" 
-                    (click)="cancelEdit()"
-                    class="px-6 py-3 bg-gray-500/20 text-gray-300 rounded-xl hover:bg-gray-500/40 transition-all duration-300"
-                  >
-                    Cancel
-                  </button>
+
+                <!-- Preview -->
+                <div *ngIf="showPreview" class="rounded-xl border border-line bg-white/[0.02] p-6 min-h-[200px]">
+                  <div class="prose prose-lg max-w-none prose-invert" [innerHTML]="getPreviewContent()"></div>
                 </div>
-              </form>
-            </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-mono uppercase tracking-[0.15em] text-faint mb-2">Tags (comma-separated)</label>
+                <input
+                  type="text"
+                  [(ngModel)]="postFormData.tags"
+                  name="tags"
+                  class="w-full rounded-xl border border-line bg-surface2 px-4 py-3 text-ink"
+                  placeholder="web development, javascript, tutorial"
+                >
+              </div>
+
+              <div>
+                <label class="block text-xs font-mono uppercase tracking-[0.15em] text-faint mb-2">Featured Image</label>
+                <div class="space-y-3">
+                  <!-- File Upload Input -->
+                  <input
+                    type="file"
+                    #fileInput
+                    (change)="onFileSelected($event)"
+                    accept="image/*"
+                    class="w-full rounded-xl border border-line bg-surface2 px-4 py-3 text-ink file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-accent/10 file:text-accent hover:file:bg-accent/20"
+                  >
+
+                  <!-- Image Preview -->
+                  <div *ngIf="selectedImagePreview" class="mt-3">
+                    <p class="text-muted text-sm mb-2 flex items-center gap-2"><app-icon name="image" [size]="16"></app-icon> Preview:</p>
+                    <img [src]="selectedImagePreview" alt="Featured image preview" class="w-48 h-32 object-cover rounded-lg border border-line">
+                  </div>
+
+                  <!-- Current Image Display -->
+                  <div *ngIf="postFormData.featuredImage && !selectedImagePreview" class="mt-3">
+                    <p class="text-muted text-sm mb-2 flex items-center gap-2"><app-icon name="image" [size]="16"></app-icon> Current Featured Image:</p>
+                    <img [src]="getImageUrl(postFormData.featuredImage)" alt="Current featured image" class="w-48 h-32 object-cover rounded-lg border border-line">
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-4">
+                <label class="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    [(ngModel)]="postFormData.published"
+                    name="published"
+                    class="w-4 h-4 rounded"
+                  >
+                  <span class="text-muted">Publish immediately</span>
+                </label>
+              </div>
+
+              <div class="flex gap-4">
+                <button
+                  type="submit"
+                  class="btn-primary !px-4 !py-2 text-sm"
+                  [disabled]="postForm.invalid || isLoading"
+                >
+                  <app-icon *ngIf="isLoading" name="loader" [size]="16" class="animate-spin"></app-icon>
+                  <app-icon *ngIf="!isLoading" name="save" [size]="16"></app-icon>
+                  {{ isLoading ? 'Saving...' : (editingPost ? 'Update Post' : 'Create Post') }}
+                </button>
+                <button
+                  type="button"
+                  (click)="cancelEdit()"
+                  class="btn-ghost"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
           </div>
         </div>
 
         <!-- Blog Posts List -->
         <div *ngIf="posts.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div 
-            *ngFor="let post of posts; let i = index" 
+          <div
+            *ngFor="let post of posts; let i = index"
             class="group"
           >
-            <div class="relative">
-              <div class="absolute inset-0 bg-gradient-to-r from-orange-500/20 to-red-500/20 rounded-2xl blur-lg group-hover:blur-xl transition-all duration-500"></div>
-              <div class="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-xl hover:shadow-orange-500/25 transition-all duration-500 hover:-translate-y-2 group-hover:border-orange-400/50">
-                <!-- Featured Image -->
-                <div *ngIf="post.featuredImage" class="mb-4">
-                  <img 
-                    [src]="getImageUrl(post.featuredImage)" 
-                    [alt]="post.title + ' featured image'"
-                    class="w-full h-32 object-cover rounded-lg border border-white/20"
-                  >
+            <div class="rounded-2xl border border-line bg-surface p-6 transition-colors hover:border-accent/30">
+              <!-- Featured Image -->
+              <div *ngIf="post.featuredImage" class="mb-4">
+                <img
+                  [src]="getImageUrl(post.featuredImage)"
+                  [alt]="post.title + ' featured image'"
+                  class="w-full h-32 object-cover rounded-lg border border-line"
+                >
+              </div>
+
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <h3 class="font-display text-lg font-semibold text-ink line-clamp-2">{{ post.title }}</h3>
+                  <p class="text-faint text-sm flex items-center gap-1.5 mt-1"><app-icon name="calendar" [size]="14"></app-icon> {{ formatDate(post.createdAt) }}</p>
                 </div>
-                
-                <div class="flex items-center justify-between mb-4">
-                  <div>
-                    <h3 class="text-lg font-bold text-white line-clamp-2">{{ post.title }}</h3>
-                    <p class="text-orange-200 text-sm">{{ formatDate(post.createdAt) }}</p>
-                  </div>
-                  <div class="flex gap-2">
-                    <button 
-                      (click)="editPost(post)"
-                      class="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center hover:bg-orange-500/40 transition-all duration-300"
-                    >
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                      </svg>
-                    </button>
-                    <button 
-                      (click)="deletePost(post.id)"
-                      class="w-8 h-8 bg-red-500/20 rounded-lg flex items-center justify-center hover:bg-red-500/40 transition-all duration-300"
-                    >
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polyline points="3,6 5,6 21,6"/>
-                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-                
-                <div class="mb-4">
-                  <div class="flex items-center gap-2 mb-2">
-                    <span 
-                      class="px-2 py-1 rounded-lg text-xs font-semibold"
-                      [class]="post.published ? 'bg-green-500/20 text-green-300' : 'bg-yellow-500/20 text-yellow-300'"
-                    >
-                      {{ post.published ? 'Published' : 'Draft' }}
-                    </span>
-                  </div>
-                  <p class="text-orange-200 text-sm line-clamp-3">{{ post.excerpt }}</p>
-                </div>
-                
-                <div *ngIf="post.tags && post.tags.length > 0" class="mb-4">
-                  <div class="flex flex-wrap gap-1">
-                    <span 
-                      *ngFor="let tag of post.tags" 
-                      class="px-2 py-1 bg-orange-500/20 text-orange-200 rounded-lg text-xs"
-                    >
-                      {{ tag }}
-                    </span>
-                  </div>
-                </div>
-                
                 <div class="flex gap-2">
-                  <button 
-                    (click)="togglePublish(post)"
-                    class="flex-1 px-3 py-2 rounded-lg text-center text-sm transition-all duration-300"
-                    [class]="post.published ? 'bg-gray-500/20 text-gray-300 hover:bg-gray-500/40' : 'bg-green-500/20 text-green-300 hover:bg-green-500/40'"
+                  <button
+                    (click)="editPost(post)"
+                    class="w-8 h-8 rounded-lg border border-line bg-white/[0.02] flex items-center justify-center text-muted hover:text-accent hover:border-accent/30 transition-colors"
                   >
-                    {{ post.published ? 'Unpublish' : 'Publish' }}
+                    <app-icon name="pencil" [size]="16"></app-icon>
                   </button>
-                  <button 
-                    (click)="viewPost(post.slug)"
-                    class="flex-1 px-3 py-2 bg-orange-500/20 text-orange-300 rounded-lg text-center text-sm hover:bg-orange-500/40 transition-all duration-300"
+                  <button
+                    (click)="deletePost(post.id)"
+                    class="w-8 h-8 rounded-lg border border-red-500/25 bg-red-500/10 flex items-center justify-center text-red-300 hover:bg-red-500/20 transition-colors"
                   >
-                    View
+                    <app-icon name="trash" [size]="16"></app-icon>
                   </button>
                 </div>
+              </div>
+
+              <div class="mb-4">
+                <div class="flex items-center gap-2 mb-2">
+                  <span
+                    class="chip"
+                    [class]="post.published ? '!text-accent !border-accent/30 !bg-accent/10' : '!text-amber-300 !border-amber-400/30 !bg-amber-500/10'"
+                  >
+                    {{ post.published ? 'Published' : 'Draft' }}
+                  </span>
+                </div>
+                <p class="text-muted text-sm line-clamp-3">{{ post.excerpt }}</p>
+              </div>
+
+              <div *ngIf="post.tags && post.tags.length > 0" class="mb-4">
+                <div class="flex flex-wrap gap-1">
+                  <span
+                    *ngFor="let tag of post.tags"
+                    class="chip"
+                  >
+                    {{ tag }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="flex gap-2">
+                <button
+                  (click)="togglePublish(post)"
+                  class="flex-1 rounded-full border border-line bg-white/[0.02] px-3 py-2 text-center text-sm text-muted hover:bg-white/[0.05] transition-colors"
+                >
+                  {{ post.published ? 'Unpublish' : 'Publish' }}
+                </button>
+                <button
+                  (click)="viewPost(post.slug)"
+                  class="flex-1 rounded-full border border-line bg-white/[0.02] px-3 py-2 text-center text-sm text-muted hover:text-accent hover:border-accent/30 transition-colors inline-flex items-center justify-center gap-1.5"
+                >
+                  <app-icon name="eye" [size]="16"></app-icon>
+                  View
+                </button>
               </div>
             </div>
           </div>
@@ -283,21 +272,16 @@ interface BlogPost {
 
         <!-- Empty State -->
         <div *ngIf="posts.length === 0" class="text-center py-20">
-          <div class="w-24 h-24 bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-              <polyline points="14,2 14,8 20,8"/>
-              <line x1="16" y1="13" x2="8" y2="13"/>
-              <line x1="16" y1="17" x2="8" y2="17"/>
-              <polyline points="10,9 9,9 8,9"/>
-            </svg>
+          <div class="w-24 h-24 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-6 text-accent">
+            <app-icon name="file-text" [size]="48"></app-icon>
           </div>
-          <h3 class="text-2xl font-bold text-white mb-4">No Blog Posts Yet</h3>
-          <p class="text-orange-200 text-lg mb-6">Start sharing your knowledge by creating your first blog post!</p>
-          <button 
+          <h3 class="font-display text-2xl font-semibold text-ink mb-4">No Blog Posts Yet</h3>
+          <p class="text-muted text-lg mb-6">Start sharing your knowledge by creating your first blog post!</p>
+          <button
             (click)="showAddForm = true"
-            class="px-6 py-3 bg-orange-500 text-white rounded-xl hover:bg-orange-600 transition-all duration-300"
+            class="btn-primary !px-4 !py-2 text-sm"
           >
+            <app-icon name="plus" [size]="16"></app-icon>
             Create Your First Post
           </button>
         </div>
@@ -317,10 +301,6 @@ interface BlogPost {
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
-    }
-    
-    button:hover:not(:disabled) {
-      transform: translateY(-2px);
     }
 
     /* Preview content styling for dark theme */
@@ -433,7 +413,7 @@ export class BlogManagementComponent implements OnInit {
   }
 
   getPreviewContent(): string {
-    return this.postFormData.content || '<p class="text-slate-400 italic">No content to preview yet...</p>';
+    return this.postFormData.content || '<p class="text-faint italic">No content to preview yet...</p>';
   }
 
   async savePost() {

@@ -2,7 +2,16 @@ import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, ElementRef, 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-declare var Quill: any;
+/** Injects the lazily-built quill.css bundle (angular.json styles entry with
+ *  inject:false) exactly once. Public pages never load any Quill assets. */
+function ensureQuillStyles(): void {
+  if (document.getElementById('quill-styles')) return;
+  const link = document.createElement('link');
+  link.id = 'quill-styles';
+  link.rel = 'stylesheet';
+  link.href = 'quill.css';
+  document.head.appendChild(link);
+}
 
 @Component({
   selector: 'app-rich-text-editor',
@@ -225,16 +234,18 @@ export class RichTextEditorComponent implements OnInit, OnDestroy {
     }
   }
   
-  private initializeQuill() {
-    // Wait for Quill to be available
-    if (typeof Quill === 'undefined') {
-      console.log('Quill not loaded yet, retrying...');
-      setTimeout(() => this.initializeQuill(), 100);
-      return;
+  private async initializeQuill() {
+    // Lazy-load Quill (code-split chunk + non-injected CSS bundle) so the
+    // ~200KB editor never ships to public visitors — admin-only cost.
+    let Quill: any;
+    try {
+      ensureQuillStyles();
+      Quill = (await import('quill')).default;
+    } catch (err) {
+      console.error('Failed to load Quill, using fallback textarea:', err);
+      return; // fallback textarea stays visible (quillLoaded remains false)
     }
-    
-    console.log('Initializing Quill editor...');
-    
+
     this.quill = new Quill(this.editorElement.nativeElement, {
       theme: 'snow',
       placeholder: this.placeholder,

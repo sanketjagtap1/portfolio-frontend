@@ -1,82 +1,85 @@
 import { Component, HostListener, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { IconComponent } from '../ui/icon.component';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, IconComponent],
   template: `
     <header
-      class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b transition-colors duration-300"
-      [class.bg-slate-950/80]="!isScrolled()"
-      [class.border-white/5]="!isScrolled()"
-      [class.bg-slate-950/95]="isScrolled()"
-      [class.border-white/10]="isScrolled()"
-      [class.shadow-lg]="isScrolled()">
-      <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+      class="fixed top-0 inset-x-0 z-50 transition-all duration-300 border-b backdrop-blur-xl"
+      [ngClass]="isScrolled()
+        ? 'bg-canvas/90 border-line'
+        : 'bg-canvas/60 border-transparent'">
+      <nav class="mx-auto max-w-shell px-6">
         <div class="flex items-center justify-between h-16">
-          <!-- Logo -->
-          <div class="flex-shrink-0">
-            <a routerLink="/" class="text-2xl font-bold bg-gradient-to-r from-blue-400 via-sky-400 to-cyan-400 bg-clip-text text-transparent">
-              Sanket Jagtap
+          <!-- Wordmark -->
+          <a routerLink="/" class="font-display text-lg font-bold tracking-tight text-ink">
+            Sanket Jagtap<span class="text-accent">.</span>
+          </a>
+
+          <!-- Desktop nav -->
+          <div class="hidden md:flex items-center gap-1">
+            <a *ngFor="let l of links" [routerLink]="l.path"
+               routerLinkActive="text-ink after:scale-x-100"
+               [routerLinkActiveOptions]="{exact: l.path === '/'}"
+               class="relative px-3 py-2 text-sm font-medium text-muted hover:text-ink transition-colors
+                      after:absolute after:left-3 after:right-3 after:-bottom-0.5 after:h-px after:bg-accent
+                      after:origin-left after:scale-x-0 after:transition-transform after:duration-300">
+              {{ l.label }}
+            </a>
+            <a routerLink="/contact"
+               class="ml-3 inline-flex items-center gap-1.5 rounded-full bg-accent px-5 py-2 text-sm font-semibold text-accent-ink transition-all hover:brightness-95 hover:-translate-y-0.5">
+              Let's Talk <app-icon name="arrow-up-right" [size]="15"></app-icon>
             </a>
           </div>
-          
-          <!-- Desktop Navigation -->
-          <div class="hidden md:block">
-            <div class="ml-10 flex items-baseline space-x-8">
-              <a routerLink="/" routerLinkActive="text-blue-400" [routerLinkActiveOptions]="{exact: true}" class="text-blue-200 hover:text-blue-300 px-3 py-2 text-sm font-medium transition-colors duration-200">Home</a>
-              <a routerLink="/skills" routerLinkActive="text-blue-400" class="text-blue-200 hover:text-blue-300 px-3 py-2 text-sm font-medium transition-colors duration-200">Skills</a>
-              <a routerLink="/experience" routerLinkActive="text-blue-400" class="text-blue-200 hover:text-blue-300 px-3 py-2 text-sm font-medium transition-colors duration-200">Experience</a>
-              <a routerLink="/projects" routerLinkActive="text-blue-400" class="text-blue-200 hover:text-blue-300 px-3 py-2 text-sm font-medium transition-colors duration-200">Projects</a>
-              <a routerLink="/contact" routerLinkActive="text-blue-400" class="text-blue-200 hover:text-blue-300 px-3 py-2 text-sm font-medium transition-colors duration-200">Contact</a>
-              <a routerLink="/contact" class="ml-4 px-6 py-2 bg-gradient-to-r from-blue-500 to-sky-500 text-white text-sm font-semibold rounded-lg hover:from-blue-600 hover:to-sky-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
-                Let's Talk
-              </a>
-            </div>
-          </div>
-          
-          <!-- Mobile menu button -->
-          <div class="md:hidden">
-            <button 
-              (click)="toggleMenu()"
-              class="inline-flex items-center justify-center p-2 rounded-md text-blue-200 hover:text-blue-300 hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
-              aria-expanded="false"
-            >
-              <span class="sr-only">Open main menu</span>
-              <!-- Hamburger icon -->
-              <svg class="block h-6 w-6" [class.hidden]="isMenuOpen()" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-              <!-- Close icon -->
-              <svg class="hidden h-6 w-6" [class.block]="isMenuOpen()" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
+
+          <!-- Mobile toggle -->
+          <button (click)="toggleMenu()"
+                  class="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-lg border border-line text-ink hover:bg-white/5"
+                  [attr.aria-expanded]="isMenuOpen()" aria-label="Toggle menu">
+            <app-icon [name]="isMenuOpen() ? 'x' : 'menu'" [size]="20"></app-icon>
+          </button>
         </div>
-        
-        <!-- Mobile Navigation -->
-        <div class="md:hidden" [class.hidden]="!isMenuOpen()">
-          <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-slate-800/95 backdrop-blur-xl border-t border-white/10">
-            <a routerLink="/" routerLinkActive="text-blue-400" [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()" class="text-blue-200 hover:text-blue-300 block px-3 py-2 text-base font-medium transition-colors duration-200">Home</a>
-            <a routerLink="/skills" routerLinkActive="text-blue-400" (click)="closeMenu()" class="text-blue-200 hover:text-blue-300 block px-3 py-2 text-base font-medium transition-colors duration-200">Skills</a>
-            <a routerLink="/experience" routerLinkActive="text-blue-400" (click)="closeMenu()" class="text-blue-200 hover:text-blue-300 block px-3 py-2 text-base font-medium transition-colors duration-200">Experience</a>
-            <a routerLink="/projects" routerLinkActive="text-blue-400" (click)="closeMenu()" class="text-blue-200 hover:text-blue-300 block px-3 py-2 text-base font-medium transition-colors duration-200">Projects</a>
-            <a routerLink="/contact" routerLinkActive="text-blue-400" (click)="closeMenu()" class="text-blue-200 hover:text-blue-300 block px-3 py-2 text-base font-medium transition-colors duration-200">Contact</a>
+
+        <!-- Mobile nav -->
+        <div class="md:hidden overflow-hidden transition-all duration-300"
+             [class.max-h-0]="!isMenuOpen()" [class.max-h-96]="isMenuOpen()">
+          <div class="flex flex-col gap-1 py-3 border-t border-line">
+            <a *ngFor="let l of links" [routerLink]="l.path"
+               routerLinkActive="text-ink bg-white/5"
+               [routerLinkActiveOptions]="{exact: l.path === '/'}"
+               (click)="closeMenu()"
+               class="rounded-lg px-3 py-2.5 text-sm font-medium text-muted hover:text-ink hover:bg-white/5 transition-colors">
+              {{ l.label }}
+            </a>
+            <a routerLink="/contact" (click)="closeMenu()"
+               class="mt-1 inline-flex items-center justify-center gap-1.5 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-accent-ink">
+              Let's Talk <app-icon name="arrow-up-right" [size]="15"></app-icon>
+            </a>
           </div>
         </div>
       </nav>
     </header>
   `,
-  styles: []
+  styles: [],
 })
 export class HeaderComponent {
   isScrolled = signal(false);
   isMenuOpen = signal(false);
 
-  // Angular registers and tears this listener down with the component — no manual cleanup/leak.
+  links = [
+    { label: 'Home', path: '/' },
+    { label: 'Skills', path: '/skills' },
+    { label: 'Experience', path: '/experience' },
+    { label: 'Projects', path: '/projects' },
+    { label: 'Services', path: '/services' },
+    { label: 'Blog', path: '/blog' },
+    { label: 'Contact', path: '/contact' },
+  ];
+
   @HostListener('window:scroll')
   onWindowScroll() {
     this.isScrolled.set(window.scrollY > 50);

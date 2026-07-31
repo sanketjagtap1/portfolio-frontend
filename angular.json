@@ -32,12 +32,15 @@
             ],
             "styles": [
               "src/styles.scss",
-              "node_modules/quill/dist/quill.snow.css"
+              {
+                "input": "node_modules/quill/dist/quill.snow.css",
+                "inject": false,
+                "bundleName": "quill"
+              }
             ],
-            "scripts": [
-              "node_modules/quill/dist/quill.js"
-            ],
-            "outputMode": "static"
+            "scripts": [],
+            "outputMode": "static",
+            "server": "src/main.server.ts"
           },
           "configurations": {
             "production": {

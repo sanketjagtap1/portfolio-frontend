@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { SeoService } from '../../services/seo.service';
 import { HeroComponent } from '../../components/hero/hero.component';
 import { AboutComponent } from '../../components/about/about.component';
 import { FeaturedProjectsComponent } from '../../components/featured-projects/featured-projects.component';
@@ -31,4 +32,15 @@ import { BlogComponent } from '../../components/blog/blog.component';
   `,
   styles: []
 })
-export class HomeComponent {}
+export class HomeComponent implements OnInit {
+  constructor(private seo: SeoService) {}
+
+  ngOnInit() {
+    this.seo.set({
+      title: 'Sanket Jagtap — Freelance Full-Stack Developer | Angular, Node.js, Flutter',
+      description:
+        'Freelance full-stack developer in Pune, India with 4+ years of experience. I design and build fast, scalable web & mobile apps with Angular, React, Node.js and Flutter. Available for freelance projects and full-time roles.',
+      path: '/',
+    });
+  }
+}

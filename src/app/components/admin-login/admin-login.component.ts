@@ -1,187 +1,106 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
+import { IconComponent } from '../ui/icon.component';
 
 @Component({
   selector: 'app-admin-login',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, IconComponent],
   template: `
-    <div class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 flex items-center justify-center px-4">
-      <!-- Background Pattern -->
-      <div class="absolute inset-0 opacity-10">
-        <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-600/20 to-sky-600/20"></div>
-        <div class="absolute top-20 left-20 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
-        <div class="absolute bottom-20 right-20 w-96 h-96 bg-sky-500/10 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
+    <div class="min-h-screen bg-canvas text-ink flex items-center justify-center px-4 py-16 relative overflow-hidden">
+      <!-- Subtle accent glow -->
+      <div class="pointer-events-none absolute inset-0 opacity-40">
+        <div class="absolute -top-24 left-1/2 -translate-x-1/2 h-72 w-[36rem] rounded-full bg-accent/10 blur-[120px]"></div>
       </div>
 
       <div class="relative z-10 w-full max-w-md">
-        <!-- Login Card -->
-        <div class="relative">
-          <div class="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-sky-500/20 rounded-3xl blur-xl"></div>
-          <div class="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-2xl">
-            <!-- Header -->
-            <div class="text-center mb-8">
-              <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-sky-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M12 15l-3-3h6l-3 3z"/>
-                  <path d="M12 3v12"/>
-                  <path d="M21 12h-6"/>
-                  <path d="M3 12h6"/>
-                </svg>
-              </div>
-              <h1 class="text-3xl font-bold text-white mb-2">Admin Login</h1>
-              <p class="text-blue-200">Access your portfolio management dashboard</p>
-            </div>
-
-            <!-- Login Form -->
-            <form (ngSubmit)="onSubmit()" #loginForm="ngForm" class="space-y-6">
-              <!-- Username Field -->
-              <div class="form-group">
-                <label for="username" class="block text-sm font-semibold text-blue-200 mb-2">Username or Email</label>
-                <input 
-                  type="text" 
-                  id="username" 
-                  name="username" 
-                  [(ngModel)]="loginData.username"
-                  required
-                  #username="ngModel"
-                  class="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all duration-300"
-                  placeholder="Enter your username or email"
-                  [class.error]="username.invalid && username.touched"
-                >
-                <div class="error-message text-red-400 text-sm mt-1" *ngIf="username.invalid && username.touched">
-                  Username is required
-                </div>
-              </div>
-
-              <!-- Password Field -->
-              <div class="form-group">
-                <label for="password" class="block text-sm font-semibold text-blue-200 mb-2">Password</label>
-                <div class="relative">
-                  <input 
-                    [type]="showPassword ? 'text' : 'password'" 
-                    id="password" 
-                    name="password" 
-                    [(ngModel)]="loginData.password"
-                    required
-                    #password="ngModel"
-                    class="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all duration-300 pr-12"
-                    placeholder="Enter your password"
-                    [class.error]="password.invalid && password.touched"
-                  >
-                  <button 
-                    type="button" 
-                    (click)="togglePassword()"
-                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-300 hover:text-blue-200 transition-colors duration-300"
-                  >
-                    <svg *ngIf="!showPassword" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                      <circle cx="12" cy="12" r="3"/>
-                    </svg>
-                    <svg *ngIf="showPassword" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
-                      <line x1="1" y1="1" x2="23" y2="23"/>
-                    </svg>
-                  </button>
-                </div>
-                <div class="error-message text-red-400 text-sm mt-1" *ngIf="password.invalid && password.touched">
-                  Password is required
-                </div>
-              </div>
-
-              <!-- Error Message -->
-              <div *ngIf="errorMessage" class="bg-red-500/20 border border-red-400/30 rounded-xl p-4">
-                <div class="flex items-center gap-2">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10"/>
-                    <line x1="15" y1="9" x2="9" y2="15"/>
-                    <line x1="9" y1="9" x2="15" y2="15"/>
-                  </svg>
-                  <span class="text-red-300 font-medium">{{ errorMessage }}</span>
-                </div>
-              </div>
-
-              <!-- Submit Button -->
-              <button 
-                type="submit" 
-                class="w-full flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-blue-500 to-sky-500 text-white rounded-xl font-semibold shadow-lg hover:shadow-blue-500/25 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-                [disabled]="loginForm.invalid || isLoading"
-              >
-                <span *ngIf="!isLoading">Sign In</span>
-                <span *ngIf="isLoading">Signing In...</span>
-                <svg *ngIf="!isLoading" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
-                  <polyline points="10,17 15,12 10,7"/>
-                  <line x1="15" y1="12" x2="3" y2="12"/>
-                </svg>
-                <div *ngIf="isLoading" class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-              </button>
-            </form>
-
-            <!-- Footer -->
-            <div class="mt-8 text-center">
-              <p class="text-blue-200 text-sm">
-                Default credentials: <span class="text-blue-300 font-mono">admin / admin123</span>
-              </p>
-            </div>
+        <div class="card p-8 md:p-10">
+          <!-- Header -->
+          <div class="mb-8">
+            <span class="kicker mb-4">Admin</span>
+            <h1 class="font-display text-3xl font-semibold text-ink mt-3">Welcome back</h1>
+            <p class="text-muted mt-2 text-sm">Sign in to manage your portfolio content.</p>
           </div>
+
+          <form (ngSubmit)="onSubmit()" #loginForm="ngForm" class="space-y-5">
+            <!-- Email / username -->
+            <div>
+              <label for="username" class="block text-xs font-mono uppercase tracking-[0.15em] text-faint mb-2">Email</label>
+              <input
+                type="text"
+                id="username"
+                name="username"
+                [(ngModel)]="loginData.username"
+                required
+                #username="ngModel"
+                autocomplete="username"
+                class="w-full rounded-xl border border-line bg-surface2 px-4 py-3 text-ink placeholder-faint focus:outline-none transition-all"
+                placeholder="you@example.com"
+              >
+              <p class="text-red-400 text-xs mt-1.5" *ngIf="username.invalid && username.touched">Email is required.</p>
+            </div>
+
+            <!-- Password -->
+            <div>
+              <label for="password" class="block text-xs font-mono uppercase tracking-[0.15em] text-faint mb-2">Password</label>
+              <div class="relative">
+                <input
+                  [type]="showPassword ? 'text' : 'password'"
+                  id="password"
+                  name="password"
+                  [(ngModel)]="loginData.password"
+                  required
+                  #password="ngModel"
+                  autocomplete="current-password"
+                  class="w-full rounded-xl border border-line bg-surface2 px-4 py-3 pr-12 text-ink placeholder-faint focus:outline-none transition-all"
+                  placeholder="••••••••"
+                >
+                <button
+                  type="button"
+                  (click)="togglePassword()"
+                  [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 text-faint hover:text-ink transition-colors"
+                >
+                  <app-icon [name]="showPassword ? 'eye-off' : 'eye'" [size]="18"></app-icon>
+                </button>
+              </div>
+              <p class="text-red-400 text-xs mt-1.5" *ngIf="password.invalid && password.touched">Password is required.</p>
+            </div>
+
+            <!-- Error -->
+            <div *ngIf="errorMessage" class="flex items-center gap-2 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3">
+              <app-icon name="alert-circle" [size]="18" class="text-red-400 shrink-0"></app-icon>
+              <span class="text-red-300 text-sm">{{ errorMessage }}</span>
+            </div>
+
+            <!-- Submit -->
+            <button
+              type="submit"
+              class="btn-primary w-full py-3.5 mt-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+              [disabled]="loginForm.invalid || isLoading"
+            >
+              <span *ngIf="!isLoading" class="inline-flex items-center gap-2">
+                Sign in <app-icon name="arrow-right" [size]="17"></app-icon>
+              </span>
+              <span *ngIf="isLoading" class="inline-flex items-center gap-2">
+                <span class="h-4 w-4 rounded-full border-2 border-accent-ink/30 border-t-accent-ink animate-spin"></span>
+                Signing in…
+              </span>
+            </button>
+          </form>
         </div>
+
+        <p class="text-center text-xs text-faint mt-6">
+          Protected area · Portfolio management
+        </p>
       </div>
     </div>
   `,
-  styles: [`
-    .form-group input:focus {
-      transform: translateY(-1px);
-      box-shadow: 0 10px 25px rgba(59, 130, 246, 0.15);
-    }
-
-    .error {
-      border-color: #ef4444 !important;
-      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
-    }
-
-    .error-message {
-      animation: slideDown 0.3s ease-out;
-    }
-
-    @keyframes slideDown {
-      from {
-        opacity: 0;
-        transform: translateY(-10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    button:hover:not(:disabled) {
-      transform: translateY(-2px);
-    }
-
-    /* Custom scrollbar */
-    ::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 3px;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: linear-gradient(45deg, #3b82f6, #0ea5e9);
-      border-radius: 3px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-      background: linear-gradient(45deg, #2563eb, #0284c7);
-    }
-  `]
+  styles: [],
 })
 export class AdminLoginComponent implements OnInit {
   loginData = {
@@ -192,14 +111,25 @@ export class AdminLoginComponent implements OnInit {
   isLoading = false;
   errorMessage = '';
   showPassword = false;
+  private redirectTo = '/admin/dashboard';
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
-    // Check if already logged in
-    const token = localStorage.getItem('admin_token');
-    if (token) {
-      this.router.navigate(['/admin/dashboard']);
+    // Preserve where the user was headed (set by the auth guard/interceptor).
+    const redirect = this.route.snapshot.queryParamMap.get('redirect');
+    if (redirect && redirect.startsWith('/admin') && redirect !== '/admin/login') {
+      this.redirectTo = redirect;
+    }
+
+    // Already logged in? Skip the form.
+    if (typeof localStorage !== 'undefined' && localStorage.getItem('admin_token')) {
+      this.router.navigateByUrl(this.redirectTo);
     }
   }
 
@@ -213,7 +143,6 @@ export class AdminLoginComponent implements OnInit {
     this.isLoading = true;
     this.errorMessage = '';
 
-    // Convert username to email field for the API
     const loginPayload = {
       email: this.loginData.username,
       password: this.loginData.password
@@ -222,17 +151,15 @@ export class AdminLoginComponent implements OnInit {
     this.http.post(`${environment.apiBaseUrl}/api/admin/login`, loginPayload)
       .subscribe({
         next: (response: any) => {
-          // Store token and user info
           localStorage.setItem('admin_token', response.token);
           localStorage.setItem('admin_user', JSON.stringify(response.user));
-          
-          // Redirect to dashboard
-          this.router.navigate(['/admin/dashboard']);
+          this.router.navigateByUrl(this.redirectTo);
         },
         error: (error) => {
           console.error('Login error:', error);
           this.isLoading = false;
-          this.errorMessage = error.error?.error || 'Login failed. Please try again.';
+          this.errorMessage = error.error?.error || 'Login failed. Please check your credentials and try again.';
+          this.cdr.detectChanges();
         }
       });
   }

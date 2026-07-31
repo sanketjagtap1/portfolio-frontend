@@ -3,314 +3,113 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PortfolioService, ContactInfo, SocialLink } from '../../services/portfolio.service';
 import { timeout, catchError, of } from 'rxjs';
+import { IconComponent } from '../ui/icon.component';
 
 @Component({
   selector: 'app-contact',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, IconComponent],
   template: `
-    <section id="contact" class="section bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 text-white relative overflow-hidden min-h-screen">
-      <!-- Background Pattern -->
-      <div class="absolute inset-0 opacity-10">
-        <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-sky-600/20 to-cyan-600/20"></div>
-        <div class="absolute top-20 left-20 w-72 h-72 bg-sky-500/10 rounded-full blur-3xl animate-pulse"></div>
-        <div class="absolute bottom-20 right-20 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
-        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl animate-pulse" style="animation-delay: 2s;"></div>
-      </div>
-      
-      <div class="container relative z-10 py-16">
-        <!-- Header Section -->
-        <div class="text-center mb-20" data-aos="fade-up">
-          <div class="inline-flex items-center gap-2 px-4 py-2 bg-sky-500/20 rounded-full text-sky-300 text-sm font-medium mb-6 border border-sky-400/30">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-              <polyline points="22,6 12,13 2,6"/>
-            </svg>
-            Get In Touch
-          </div>
-          <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-white via-sky-100 to-cyan-200 bg-clip-text text-transparent leading-tight">
-            Let's Connect
+    <section id="contact" class="section min-h-screen">
+      <div class="mx-auto max-w-shell px-6">
+        <!-- Header -->
+        <div class="max-w-2xl" data-aos="fade-up">
+          <p class="kicker">Contact</p>
+          <h2 class="mt-4 font-display text-4xl md:text-6xl font-semibold tracking-tightest text-ink">
+            Let's build something
           </h2>
-          <div class="w-24 h-1 bg-gradient-to-r from-sky-400 to-cyan-400 mx-auto rounded-full mb-8"></div>
-          <p class="text-lg md:text-xl text-sky-200 mt-8 max-w-4xl mx-auto leading-relaxed">
-            Ready to collaborate on your next project? I'm always excited to work on new challenges and bring innovative ideas to life.
+          <p class="mt-4 text-lg text-muted">
+            Have a project in mind, or not sure where to start? Tell me what you need —
+            I read every message personally and reply within a day.
           </p>
         </div>
 
-        <!-- Loading State -->
-        <div *ngIf="isLoading" class="flex flex-col justify-center items-center py-20" role="status" aria-label="Loading contact data">
-          <div class="relative mb-4">
-            <div class="w-16 h-16 border-4 border-sky-500/30 border-t-sky-400 rounded-full animate-spin"></div>
-            <div class="absolute inset-0 w-16 h-16 border-4 border-transparent border-t-cyan-400 rounded-full animate-spin" style="animation-delay: 0.5s;"></div>
-          </div>
-          <p class="text-sky-200 text-lg">Loading contact information...</p>
-          <span class="sr-only">Loading contact data...</span>
-        </div>
+        <div class="mt-14 grid gap-8 lg:grid-cols-[1fr_1.2fr] lg:items-start">
+          <!-- Left: contact + socials -->
+          <div class="space-y-4" data-aos="fade-up">
+            <div *ngFor="let contact of contactInfo"
+                 class="flex items-center gap-4 rounded-2xl border border-line bg-surface p-5">
+              <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-line bg-white/[0.03] text-accent">
+                <app-icon [name]="iconForType(contact.type)" [size]="20"></app-icon>
+              </div>
+              <div class="min-w-0">
+                <div class="font-mono text-xs uppercase tracking-[0.12em] text-faint">{{ getContactTypeLabel(contact.type) }}</div>
+                <a *ngIf="isClickableContact(contact.type)" [href]="getContactHref(contact.type, contact.value)"
+                   [attr.target]="contact.type === 'linkedin' ? '_blank' : null"
+                   class="truncate text-ink hover:text-accent transition-colors">{{ contact.value }}</a>
+                <span *ngIf="!isClickableContact(contact.type)" class="text-ink">{{ contact.value }}</span>
+              </div>
+            </div>
 
-        <!-- Contact Content -->
-        <div *ngIf="!isLoading" class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
-          <!-- Contact Information -->
-          <div class="space-y-8" data-aos="fade-right">
-            <!-- Introduction -->
-            <div class="relative">
-              <div class="absolute inset-0 bg-gradient-to-r from-sky-500/20 to-cyan-500/20 rounded-3xl blur-xl"></div>
-              <div class="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-2xl">
-                <h3 class="text-2xl md:text-3xl font-bold text-white mb-4">Let's Work Together</h3>
-                <p class="text-sky-100 leading-relaxed text-base md:text-lg">
-                  I'm always interested in new opportunities and exciting projects. Whether you have a question, 
-                  want to collaborate, or just want to say hi, I'd love to hear from you!
+            <div class="rounded-2xl border border-line bg-surface p-5">
+              <div class="font-mono text-xs uppercase tracking-[0.12em] text-faint">Follow me</div>
+              <div class="mt-3 flex flex-wrap gap-2">
+                <a *ngFor="let social of socialLinks" [href]="social.url" target="_blank" rel="noopener noreferrer"
+                   [attr.aria-label]="social.platform"
+                   class="inline-flex items-center gap-2 rounded-full border border-line px-4 py-2 text-sm font-medium text-ink transition-colors hover:border-ink/40">
+                  <app-icon [name]="iconForPlatform(social.platform)" [size]="16"></app-icon>
+                  {{ getContactTypeLabel(social.platform) }}
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: form -->
+          <div class="rounded-2xl border border-line bg-surface p-6 md:p-8" data-aos="fade-up">
+            <h3 class="font-display text-xl font-semibold text-ink">Send a message</h3>
+
+            <div *ngIf="submitSuccess" role="status" class="mt-5 rounded-xl border border-accent/30 bg-accent/10 p-4 text-sm text-accent">
+              Thanks — your message has been received. I'll get back to you within a day. You can also reach me at
+              <a [href]="'mailto:' + recipientEmailDisplay" class="font-medium underline">{{ recipientEmailDisplay }}</a>.
+            </div>
+            <div *ngIf="submitError" role="alert" class="mt-5 rounded-xl border border-red-400/40 bg-red-500/10 p-4 text-sm text-red-300">
+              Something went wrong. Email me directly at
+              <a [href]="'mailto:' + recipientEmailDisplay" class="font-medium underline">{{ recipientEmailDisplay }}</a>.
+            </div>
+
+            <form (ngSubmit)="onSubmit()" (input)="dismissStatus()" #contactForm="ngForm" class="mt-6 space-y-5">
+              <div>
+                <label for="name" class="mb-1.5 block text-xs font-medium text-muted">Name</label>
+                <input type="text" id="name" name="name" [(ngModel)]="formData.name" required minlength="2" #name="ngModel"
+                       class="w-full rounded-xl border px-4 py-3 text-sm outline-none" placeholder="Your full name" />
+                <p class="mt-1 text-xs text-red-400" *ngIf="name.invalid && name.touched">Please enter your name.</p>
+              </div>
+              <div>
+                <label for="email" class="mb-1.5 block text-xs font-medium text-muted">Email</label>
+                <input type="email" id="email" name="email" [(ngModel)]="formData.email" required email #email="ngModel"
+                       class="w-full rounded-xl border px-4 py-3 text-sm outline-none" placeholder="your.email@example.com" />
+                <p class="mt-1 text-xs text-red-400" *ngIf="email.invalid && email.touched">
+                  <span *ngIf="email.errors?.['required']">Email is required</span>
+                  <span *ngIf="email.errors?.['email']">Please enter a valid email</span>
                 </p>
               </div>
-            </div>
-
-            <!-- Contact Methods -->
-            <div class="space-y-6">
-              <div *ngFor="let contact of contactInfo" class="group" data-aos="fade-up" data-aos-delay="100">
-                <div class="relative">
-                  <div class="absolute inset-0 bg-gradient-to-r from-sky-500/20 to-cyan-500/20 rounded-2xl blur-lg group-hover:blur-xl transition-all duration-500"></div>
-                  <div class="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-xl hover:shadow-sky-500/25 transition-all duration-500 hover:-translate-y-2 group-hover:border-sky-400/50">
-                    <div class="flex items-center gap-4">
-                      <div class="w-12 h-12 bg-gradient-to-br from-sky-500 to-cyan-600 rounded-xl flex items-center justify-center shadow-lg">
-                        <span class="text-white text-lg">{{ contact.icon || '📧' }}</span>
-                      </div>
-                      <div class="flex-1">
-                        <h4 class="text-lg font-bold text-white mb-1">{{ getContactTypeLabel(contact.type) }}</h4>
-                        <a *ngIf="isClickableContact(contact.type)" 
-                           [href]="getContactHref(contact.type, contact.value)" 
-                           [target]="contact.type === 'linkedin' ? '_blank' : null"
-                           class="text-sky-200 hover:text-sky-100 transition-colors duration-300">
-                          {{ contact.value }}
-                        </a>
-                        <span *ngIf="!isClickableContact(contact.type)" class="text-sky-200">
-                          {{ contact.value }}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+              <div>
+                <label for="subject" class="mb-1.5 block text-xs font-medium text-muted">Subject</label>
+                <input type="text" id="subject" name="subject" [(ngModel)]="formData.subject" required #subject="ngModel"
+                       class="w-full rounded-xl border px-4 py-3 text-sm outline-none" placeholder="What's this about?" />
+                <p class="mt-1 text-xs text-red-400" *ngIf="subject.invalid && subject.touched">Subject is required</p>
               </div>
-            </div>
-
-            <!-- Social Links -->
-            <div class="relative" data-aos="fade-up" data-aos-delay="500">
-              <div class="absolute inset-0 bg-gradient-to-r from-sky-500/20 to-cyan-500/20 rounded-3xl blur-xl"></div>
-              <div class="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-2xl">
-                <h4 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-                    <polyline points="15,3 21,3 21,9"/>
-                    <line x1="10" y1="14" x2="21" y2="3"/>
-                  </svg>
-                  Connect With Me
-                </h4>
-                <div class="flex gap-4">
-                  <a *ngFor="let social of socialLinks" 
-                     [href]="social.url" 
-                     target="_blank" 
-                     class="group flex items-center justify-center w-12 h-12 bg-gradient-to-r from-blue-500/20 to-blue-600/20 text-blue-300 rounded-xl border border-blue-400/30 hover:from-blue-500/40 hover:to-blue-600/40 hover:border-blue-400/50 transition-all duration-300 hover:scale-105">
-                    <span class="text-lg">{{ social.icon || '🔗' }}</span>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Contact Form -->
-          <div class="relative" data-aos="fade-left">
-            <div class="absolute inset-0 bg-gradient-to-r from-sky-500/20 to-cyan-500/20 rounded-3xl blur-xl"></div>
-            <div class="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-2xl">
-              <h3 class="text-2xl md:text-3xl font-bold text-white mb-8 text-center">Send me a message</h3>
-
-              <!-- Status banners -->
-              <div *ngIf="submitSuccess" role="status" class="flex items-start gap-3 mb-6 p-4 rounded-xl bg-emerald-500/15 border border-emerald-400/40 text-emerald-100">
-                <svg class="w-5 h-5 mt-0.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                <p class="text-sm">Your email app should have opened with the message ready to send. If it didn't, email me directly at <a [href]="'mailto:' + recipientEmailDisplay" class="underline font-medium">{{ recipientEmailDisplay }}</a>.</p>
-              </div>
-              <div *ngIf="submitError" role="alert" class="flex items-start gap-3 mb-6 p-4 rounded-xl bg-red-500/15 border border-red-400/40 text-red-100">
-                <svg class="w-5 h-5 mt-0.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
-                <p class="text-sm">Something went wrong. Please email me directly at <a [href]="'mailto:' + recipientEmailDisplay" class="underline font-medium">{{ recipientEmailDisplay }}</a>.</p>
+              <div>
+                <label for="message" class="mb-1.5 block text-xs font-medium text-muted">Message</label>
+                <textarea id="message" name="message" [(ngModel)]="formData.message" required minlength="10" rows="5" #message="ngModel"
+                          class="w-full resize-y rounded-xl border px-4 py-3 text-sm outline-none" placeholder="Tell me about your project or question..."></textarea>
+                <p class="mt-1 text-xs text-red-400" *ngIf="message.invalid && message.touched">Please write at least a sentence (10+ characters).</p>
               </div>
 
-              <form (ngSubmit)="onSubmit()" (input)="dismissStatus()" #contactForm="ngForm" class="space-y-6">
-                <div class="form-group">
-                  <label for="name" class="block text-sm font-semibold text-sky-200 mb-2">Name *</label>
-                  <input 
-                    type="text" 
-                    id="name" 
-                    name="name" 
-                    [(ngModel)]="formData.name"
-                    required
-                    #name="ngModel"
-                    class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-sky-300 focus:outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-400/20 transition-all duration-300"
-                    placeholder="Your full name"
-                    [class.error]="name.invalid && name.touched"
-                  >
-                  <div class="error-message text-red-400 text-sm mt-1" *ngIf="name.invalid && name.touched">
-                    Name is required
-                  </div>
-                </div>
-                
-                <div class="form-group">
-                  <label for="email" class="block text-sm font-semibold text-sky-200 mb-2">Email *</label>
-                  <input 
-                    type="email" 
-                    id="email" 
-                    name="email" 
-                    [(ngModel)]="formData.email"
-                    required
-                    email
-                    #email="ngModel"
-                    class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-sky-300 focus:outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-400/20 transition-all duration-300"
-                    placeholder="your.email@example.com"
-                    [class.error]="email.invalid && email.touched"
-                  >
-                  <div class="error-message text-red-400 text-sm mt-1" *ngIf="email.invalid && email.touched">
-                    <span *ngIf="email.errors?.['required']">Email is required</span>
-                    <span *ngIf="email.errors?.['email']">Please enter a valid email</span>
-                  </div>
-                </div>
-                
-                <div class="form-group">
-                  <label for="subject" class="block text-sm font-semibold text-sky-200 mb-2">Subject *</label>
-                  <input 
-                    type="text" 
-                    id="subject" 
-                    name="subject" 
-                    [(ngModel)]="formData.subject"
-                    required
-                    #subject="ngModel"
-                    class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-sky-300 focus:outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-400/20 transition-all duration-300"
-                    placeholder="What's this about?"
-                    [class.error]="subject.invalid && subject.touched"
-                  >
-                  <div class="error-message text-red-400 text-sm mt-1" *ngIf="subject.invalid && subject.touched">
-                    Subject is required
-                  </div>
-                </div>
-                
-                <div class="form-group">
-                  <label for="message" class="block text-sm font-semibold text-sky-200 mb-2">Message *</label>
-                  <textarea 
-                    id="message" 
-                    name="message" 
-                    [(ngModel)]="formData.message"
-                    required
-                    rows="5"
-                    #message="ngModel"
-                    class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-sky-300 focus:outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-400/20 transition-all duration-300 resize-none"
-                    placeholder="Tell me about your project or question..."
-                    [class.error]="message.invalid && message.touched"
-                  ></textarea>
-                  <div class="error-message text-red-400 text-sm mt-1" *ngIf="message.invalid && message.touched">
-                    Message is required
-                  </div>
-                </div>
-                
-                <button 
-                  type="submit" 
-                  class="w-full flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-sky-500 to-cyan-500 text-white rounded-xl font-semibold shadow-lg hover:shadow-sky-500/25 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-                  [disabled]="contactForm.invalid || isSubmitting"
-                >
-                  <span *ngIf="!isSubmitting">Send Message</span>
-                  <span *ngIf="isSubmitting">Sending...</span>
-                  <svg *ngIf="!isSubmitting" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
-                  </svg>
-                  <div *ngIf="isSubmitting" class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                </button>
-              </form>
-            </div>
+              <button type="submit"
+                      class="flex w-full items-center justify-center gap-2 rounded-full bg-accent px-6 py-3.5 font-semibold text-accent-ink transition-all hover:brightness-95 disabled:opacity-50"
+                      [disabled]="contactForm.invalid || isSubmitting">
+                <span *ngIf="!isSubmitting">Send message</span>
+                <span *ngIf="isSubmitting">Sending…</span>
+                <app-icon *ngIf="!isSubmitting" name="send" [size]="17"></app-icon>
+              </button>
+            </form>
           </div>
         </div>
       </div>
     </section>
   `,
-  styles: [`
-    /* Custom animations for enhanced user experience */
-    @keyframes float {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
-    }
-    
-    @keyframes glow {
-      0%, 100% { box-shadow: 0 0 20px rgba(14, 165, 233, 0.3); }
-      50% { box-shadow: 0 0 30px rgba(14, 165, 233, 0.6); }
-    }
-    
-    .group:hover .animate-float {
-      animation: float 2s ease-in-out infinite;
-    }
-    
-    .group:hover .animate-glow {
-      animation: glow 2s ease-in-out infinite;
-    }
-    
-    /* Enhanced scrollbar for webkit browsers */
-    .contact-container::-webkit-scrollbar {
-      width: 6px;
-    }
-    
-    .contact-container::-webkit-scrollbar-track {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 3px;
-    }
-    
-    .contact-container::-webkit-scrollbar-thumb {
-      background: linear-gradient(45deg, #0ea5e9, #0ea5e9);
-      border-radius: 3px;
-    }
-    
-    .contact-container::-webkit-scrollbar-thumb:hover {
-      background: linear-gradient(45deg, #0284c7, #0284c7);
-    }
-    
-    /* Professional focus states for accessibility */
-    .focus-visible:focus {
-      outline: 2px solid #0ea5e9;
-      outline-offset: 2px;
-    }
-    
-    /* Enhanced text selection */
-    ::selection {
-      background: rgba(14, 165, 233, 0.3);
-      color: white;
-    }
-    
-    /* Professional gradient text */
-    .gradient-text {
-      background: linear-gradient(135deg, #ffffff 0%, #e0f2fe 50%, #f3e8ff 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    
-    /* Form input focus effects */
-    .form-group input:focus,
-    .form-group textarea:focus {
-      transform: translateY(-1px);
-      box-shadow: 0 10px 25px rgba(14, 165, 233, 0.15);
-    }
-    
-    /* Button hover effects */
-    button:hover:not(:disabled) {
-      transform: translateY(-2px);
-    }
-    
-    /* Error state styling */
-    .error {
-      border-color: #ef4444 !important;
-      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
-    }
-    
-    /* Loading animation */
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    
-    .animate-spin {
-      animation: spin 1s linear infinite;
-    }
-  `]
+  styles: [],
 })
 export class ContactComponent implements OnInit {
   isSubmitting = false;
@@ -319,16 +118,9 @@ export class ContactComponent implements OnInit {
   submitError = false;
   contactInfo: ContactInfo[] = [];
   socialLinks: SocialLink[] = [];
-  formData = {
-    name: '',
-    email: '',
-    subject: '',
-    message: ''
-  };
+  formData = { name: '', email: '', subject: '', message: '' };
 
-  constructor(private portfolioService: PortfolioService, private cdr: ChangeDetectorRef) {
-    // Component initialized
-  }
+  constructor(private portfolioService: PortfolioService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.loadContactData();
@@ -337,80 +129,69 @@ export class ContactComponent implements OnInit {
   loadContactData() {
     this.isLoading = true;
     this.portfolioService.getContactInfo()
-      .pipe(
-        timeout(10000),
-        catchError(error => {
-          console.error('Error loading contact info:', error);
-          this.loadFallbackContactData();
-          return of([]);
-        })
-      )
+      .pipe(timeout(10000), catchError(() => of([] as ContactInfo[])))
       .subscribe({
         next: (contactInfo) => {
-          if (contactInfo && contactInfo.length > 0) {
-            this.contactInfo = contactInfo;
-          } else {
-            this.loadFallbackContactData();
-          }
+          this.contactInfo = contactInfo && contactInfo.length > 0 ? contactInfo : this.fallbackContact();
           this.isLoading = false;
           this.cdr.detectChanges();
         },
-        error: (error) => {
-          console.error('Error loading contact info:', error);
-          this.loadFallbackContactData();
+        error: () => {
+          this.contactInfo = this.fallbackContact();
           this.isLoading = false;
-        }
+          this.cdr.detectChanges();
+        },
       });
 
     this.portfolioService.getSocialLinks()
-      .pipe(
-        timeout(10000),
-        catchError(error => {
-          console.error('Error loading social links:', error);
-          this.loadFallbackSocialData();
-          return of([]);
-        })
-      )
+      .pipe(timeout(10000), catchError(() => of([] as SocialLink[])))
       .subscribe({
         next: (socialLinks) => {
-          if (socialLinks && socialLinks.length > 0) {
-            this.socialLinks = socialLinks;
-          } else {
-            this.loadFallbackSocialData();
-          }
+          this.socialLinks = socialLinks && socialLinks.length > 0 ? socialLinks : this.fallbackSocial();
+          this.cdr.detectChanges();
         },
-        error: (error) => {
-          console.error('Error loading social links:', error);
-          this.loadFallbackSocialData();
-        }
+        error: () => {
+          this.socialLinks = this.fallbackSocial();
+          this.cdr.detectChanges();
+        },
       });
   }
 
-  private loadFallbackContactData() {
-    this.contactInfo = [
-      { id: 1, type: 'email', value: 'sanketjagtap479@gmail.com', icon: '📧', order: 0, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-      { id: 2, type: 'phone', value: '+91 8806328987', icon: '📞', order: 1, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-      { id: 3, type: 'location', value: 'Pune, India', icon: '📍', order: 2, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-      { id: 4, type: 'linkedin', value: 'linkedin.com/in/sanket-jagtap', icon: '💼', order: 3, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
+  private fallbackContact(): ContactInfo[] {
+    const now = new Date().toISOString();
+    return [
+      { id: 1, type: 'email', value: 'contact@sanket-jagtap.in', icon: '', order: 0, createdAt: now, updatedAt: now },
+      { id: 2, type: 'phone', value: '+91 8806328987', icon: '', order: 1, createdAt: now, updatedAt: now },
+      { id: 3, type: 'location', value: 'Pune, India', icon: '', order: 2, createdAt: now, updatedAt: now },
+      { id: 4, type: 'linkedin', value: 'linkedin.com/in/sanket-jagtap', icon: '', order: 3, createdAt: now, updatedAt: now },
     ];
   }
 
-  private loadFallbackSocialData() {
-    this.socialLinks = [
-      { id: 1, platform: 'linkedin', url: 'https://linkedin.com/in/sanket-jagtap', icon: '💼', order: 0, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-      { id: 2, platform: 'email', url: 'mailto:sanketjagtap479@gmail.com', icon: '📧', order: 1, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-      { id: 3, platform: 'phone', url: 'tel:8806328987', icon: '📞', order: 2, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
+  private fallbackSocial(): SocialLink[] {
+    const now = new Date().toISOString();
+    return [
+      { id: 1, platform: 'github', url: 'https://github.com/sanketjagtap1', icon: '', order: 0, createdAt: now, updatedAt: now },
+      { id: 2, platform: 'linkedin', url: 'https://linkedin.com/in/sanket-jagtap', icon: '', order: 1, createdAt: now, updatedAt: now },
+      { id: 3, platform: 'email', url: 'mailto:contact@sanket-jagtap.in', icon: '', order: 2, createdAt: now, updatedAt: now },
     ];
+  }
+
+  iconForType(type: string): string {
+    const map: { [k: string]: string } = {
+      email: 'mail', phone: 'phone', location: 'map-pin',
+      linkedin: 'linkedin', github: 'github', twitter: 'twitter',
+    };
+    return map[type] || 'globe';
+  }
+
+  iconForPlatform(platform: string): string {
+    return this.iconForType(platform);
   }
 
   getContactTypeLabel(type: string): string {
     const labels: { [key: string]: string } = {
-      'email': 'Email',
-      'phone': 'Phone',
-      'location': 'Location',
-      'linkedin': 'LinkedIn',
-      'github': 'GitHub',
-      'twitter': 'Twitter'
+      email: 'Email', phone: 'Phone', location: 'Location',
+      linkedin: 'LinkedIn', github: 'GitHub', twitter: 'Twitter/X',
     };
     return labels[type] || type.charAt(0).toUpperCase() + type.slice(1);
   }
@@ -421,62 +202,52 @@ export class ContactComponent implements OnInit {
 
   getContactHref(type: string, value: string): string {
     switch (type) {
-      case 'email':
-        return `mailto:${value}`;
-      case 'phone':
-        return `tel:${value}`;
+      case 'email': return `mailto:${value}`;
+      case 'phone': return `tel:${value}`;
       case 'linkedin':
-        return value.startsWith('http') ? value : `https://${value}`;
       case 'github':
-        return value.startsWith('http') ? value : `https://${value}`;
-      case 'twitter':
-        return value.startsWith('http') ? value : `https://${value}`;
-      default:
-        return value;
+      case 'twitter': return value.startsWith('http') ? value : `https://${value}`;
+      default: return value;
     }
   }
 
-  /** Email messages are routed to. Prefers the configured email contact, falls back to a default. */
   private get recipientEmail(): string {
     const emailContact = this.contactInfo.find(c => c.type === 'email');
-    return emailContact?.value || 'sanketjagtap479@gmail.com';
+    return emailContact?.value || 'contact@sanket-jagtap.in';
   }
 
-  /** Public, template-accessible recipient email. */
   get recipientEmailDisplay(): string {
     return this.recipientEmail;
   }
 
   onSubmit() {
     if (this.isSubmitting) return;
-
-    // Guard against empty submissions (in addition to the template's form validation).
     const { name, email, subject, message } = this.formData;
-    if (!name.trim() || !email.trim() || !subject.trim() || !message.trim()) {
-      return;
-    }
+    if (!name.trim() || !email.trim() || !message.trim()) return;
 
     this.isSubmitting = true;
     this.submitError = false;
+    this.submitSuccess = false;
 
-    try {
-      const body = `Name: ${name}\nEmail: ${email}\n\n${message}`;
-      const mailto = `mailto:${this.recipientEmail}`
-        + `?subject=${encodeURIComponent(subject)}`
-        + `&body=${encodeURIComponent(body)}`;
-
-      // Hand off to the user's email client with the message pre-filled.
-      window.location.href = mailto;
-
-      this.submitSuccess = true;
-      this.formData = { name: '', email: '', subject: '', message: '' };
-    } catch (error) {
-      console.error('Contact submission failed:', error);
-      this.submitError = true;
-    } finally {
-      this.isSubmitting = false;
-      this.cdr.detectChanges();
-    }
+    // Persist the enquiry server-side so it's captured as a lead
+    // (viewable in the admin dashboard under Leads & Messages).
+    this.portfolioService.sendContactMessage({
+      name: name.trim(),
+      email: email.trim(),
+      subject: (subject || '').trim() || 'Website enquiry',
+      message: message.trim(),
+    })
+      .pipe(timeout(15000), catchError(() => of(null)))
+      .subscribe((res) => {
+        if (res !== null) {
+          this.submitSuccess = true;
+          this.formData = { name: '', email: '', subject: '', message: '' };
+        } else {
+          this.submitError = true;
+        }
+        this.isSubmitting = false;
+        this.cdr.detectChanges();
+      });
   }
 
   dismissStatus() {

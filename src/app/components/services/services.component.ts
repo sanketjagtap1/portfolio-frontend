@@ -1,8 +1,9 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { PortfolioService } from '../../services/portfolio.service';
 import { timeout, catchError, of } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { IconComponent } from '../ui/icon.component';
 
 export interface Service {
   id: number;
@@ -21,262 +22,89 @@ export interface Service {
 @Component({
   selector: 'app-services',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule, IconComponent],
   template: `
-    <section id="services" class="section bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 text-white relative overflow-hidden min-h-screen">
-      <!-- Background Pattern -->
-      <div class="absolute inset-0 opacity-10">
-        <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-600/20 to-sky-600/20"></div>
-        <div class="absolute top-0 left-0 w-full h-full bg-[url('/assets/patterns/grid.svg')] bg-repeat opacity-5"></div>
-      </div>
-
-      <div class="relative z-10 container mx-auto px-4 py-16">
-        <!-- Section Header -->
-        <div class="text-center mb-20">
-          <div class="inline-block relative mb-6">
-            <h2 class="text-6xl font-extrabold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-400 to-sky-300" data-aos="fade-down">
-              Our Services
-            </h2>
-            <!-- Text Glow Effect -->
-            <div class="absolute inset-0 text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-400 to-sky-300 blur-sm opacity-50" data-aos="fade-down">
-              Our Services
-            </div>
-          </div>
-          <p class="text-xl text-center text-blue-200 mb-8 max-w-4xl mx-auto leading-relaxed" data-aos="fade-up" data-aos-delay="100">
-            Comprehensive solutions tailored to bring your digital vision to life. From concept to deployment, we deliver excellence at every step.
+    <section id="services" class="section border-t border-line">
+      <div class="mx-auto max-w-shell px-6">
+        <!-- Header -->
+        <div class="max-w-2xl" data-aos="fade-up">
+          <p class="kicker">03 — Services</p>
+          <h2 class="mt-4 font-display text-3xl md:text-5xl font-semibold tracking-tightest text-ink">
+            Ways we can work together
+          </h2>
+          <p class="mt-3 text-muted">
+            Whether you need a quick fix, a polished website, or a full product built from scratch —
+            there's a package with clear scope, pricing and timelines. No surprises.
           </p>
-          <div class="flex items-center justify-center gap-4 mb-8" data-aos="fade-up" data-aos-delay="200">
-            <div class="w-16 h-1 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full"></div>
-            <div class="w-3 h-3 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full animate-pulse"></div>
-            <div class="w-16 h-1 bg-gradient-to-r from-cyan-500 to-sky-500 rounded-full"></div>
-          </div>
         </div>
 
-        <!-- Loading State -->
-        <div *ngIf="isLoading" class="flex items-center justify-center h-64">
-          <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-400"></div>
+        <!-- Loading -->
+        <div *ngIf="isLoading" class="mt-14 flex justify-center">
+          <div class="h-10 w-10 animate-spin rounded-full border-2 border-line border-t-accent"></div>
         </div>
 
-        <!-- No Services State -->
-        <div *ngIf="!isLoading && services.length === 0" class="text-center text-blue-300 text-lg">
-          <div class="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-            </svg>
-          </div>
-          <p>No services available at the moment.</p>
-        </div>
-
-        <!-- Services Grid -->
-        <div *ngIf="!isLoading && services.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <div 
-            *ngFor="let service of services; let i = index" 
-            class="group relative cursor-pointer"
-            data-aos="fade-up"
-            [attr.data-aos-delay]="i * 150"
-            (click)="contactForService(service)"
-          >
-            <!-- Card Background Glow -->
-            <div class="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-500 opacity-0 group-hover:opacity-100"></div>
-            
-            <!-- Main Card -->
-            <div class="relative bg-slate-800/90 backdrop-blur-xl rounded-3xl p-8 border border-slate-700/50 hover:border-blue-400/50 transition-all duration-500 h-full flex flex-col group-hover:scale-105 group-hover:shadow-2xl group-hover:shadow-blue-500/20">
-              <!-- Animated Background Pattern -->
-              <div class="absolute inset-0 opacity-5 group-hover:opacity-10 transition-opacity duration-500">
-                <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-full blur-3xl transform translate-x-16 -translate-y-16"></div>
-                <div class="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-cyan-400 to-sky-400 rounded-full blur-2xl transform -translate-x-12 translate-y-12"></div>
+        <!-- Grid -->
+        <div *ngIf="!isLoading && services.length > 0" class="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          <div *ngFor="let service of services; let i = index"
+               class="group flex h-full flex-col rounded-2xl border border-line bg-surface p-6 transition-colors hover:border-ink/25"
+               data-aos="fade-up" [attr.data-aos-delay]="i * 80">
+            <div class="flex items-start justify-between">
+              <div class="flex h-12 w-12 items-center justify-center rounded-xl border border-line bg-white/[0.03] text-accent">
+                <app-icon [name]="iconFor(i)" [size]="22"></app-icon>
               </div>
+              <span *ngIf="service.featured"
+                    class="rounded-full border border-accent/30 bg-accent/10 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wide text-accent">
+                Popular
+              </span>
+            </div>
 
-              <!-- Featured Badge -->
-              <div *ngIf="service.featured" class="absolute top-4 right-4 z-30">
-                <div class="bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-xl border-2 border-white/20">
-                  <div class="flex items-center gap-1.5">
-                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                    </svg>
-                    Featured
-                  </div>
-                </div>
+            <h3 class="mt-5 font-display text-xl font-semibold text-ink">{{ service.title }}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-muted">{{ service.description }}</p>
+
+            <ul class="mt-4 space-y-2">
+              <li *ngFor="let feature of service.features.slice(0, 4)" class="flex items-center gap-2.5 text-sm text-muted">
+                <app-icon name="check" [size]="15" class="shrink-0 text-accent"></app-icon>
+                {{ feature }}
+              </li>
+            </ul>
+
+            <div class="mt-6 flex items-end justify-between border-t border-line pt-5">
+              <div>
+                <div *ngIf="service.price" class="font-display text-lg font-semibold text-ink">{{ service.price }}</div>
+                <div *ngIf="service.duration" class="font-mono text-xs text-faint">{{ service.duration }}</div>
               </div>
-
-              <!-- Service Icon -->
-              <div class="relative mb-6">
-                <div class="w-20 h-20 bg-gradient-to-br from-blue-500 via-cyan-500 to-sky-500 rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg group-hover:shadow-blue-500/30">
-                  <img 
-                    *ngIf="service.icon" 
-                    [src]="getImageUrl(service.icon)" 
-                    [alt]="service.title"
-                    class="w-10 h-10 object-contain filter brightness-0 invert group-hover:scale-110 transition-transform duration-300"
-                  />
-                  <svg 
-                    *ngIf="!service.icon" 
-                    class="w-10 h-10 text-white group-hover:scale-110 transition-transform duration-300" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    viewBox="0 0 24 24"
-                  >
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-                  </svg>
-                </div>
-                <!-- Icon Glow Effect -->
-                <div class="absolute inset-0 w-20 h-20 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-2xl blur-lg opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
-              </div>
-
-              <!-- Service Title -->
-              <h3 class="text-2xl font-bold text-white mb-4 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-400 group-hover:to-cyan-300 transition-all duration-300">
-                {{ service.title }}
-              </h3>
-
-              <!-- Service Description -->
-              <p class="text-gray-300 leading-relaxed mb-5 flex-1 text-sm group-hover:text-gray-200 transition-colors duration-300">
-                {{ service.description }}
-              </p>
-
-              <!-- Features List -->
-              <div class="mb-5">
-                <h4 class="text-xs font-semibold text-blue-300 uppercase tracking-wide mb-3 flex items-center gap-2">
-                  <div class="w-1.5 h-1.5 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full animate-pulse"></div>
-                  Key Features
-                </h4>
-                <ul class="space-y-1.5">
-                  <li 
-                    *ngFor="let feature of service.features.slice(0, 3)"
-                    class="flex items-center gap-2.5 text-xs text-gray-300 group-hover:text-gray-200 transition-colors duration-300"
-                  >
-                    <div class="w-4 h-4 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full flex items-center justify-center flex-shrink-0">
-                      <svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                      </svg>
-                    </div>
-                    <span>{{ feature }}</span>
-                  </li>
-                  <li *ngIf="service.features.length > 3" class="text-xs text-gray-400 ml-6 group-hover:text-gray-300 transition-colors duration-300">
-                    +{{ service.features.length - 3 }} more features
-                  </li>
-                </ul>
-              </div>
-
-              <!-- Service Details -->
-              <div class="mt-auto pt-6 border-t border-slate-700/50 group-hover:border-blue-400/30 transition-colors duration-300">
-                <div class="flex justify-between items-center mb-6">
-                  <div *ngIf="service.price" class="text-left">
-                    <div class="text-xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-400 group-hover:to-cyan-300 transition-all duration-300">
-                      {{ service.price }}
-                    </div>
-                    <div class="text-xs text-gray-400 group-hover:text-gray-300 transition-colors duration-300">Starting from</div>
-                  </div>
-                  <div *ngIf="service.duration" class="text-right">
-                    <div class="text-base font-semibold text-blue-200 group-hover:text-blue-100 transition-colors duration-300">{{ service.duration }}</div>
-                    <div class="text-xs text-gray-400 group-hover:text-gray-300 transition-colors duration-300">Delivery time</div>
-                  </div>
-                </div>
-
-                <!-- Contact Button -->
-                <div class="relative">
-                  <button 
-                    class="w-full bg-gradient-to-r from-blue-500 via-cyan-500 to-sky-500 text-white py-3 px-5 rounded-xl font-medium hover:from-blue-600 hover:via-cyan-600 hover:to-sky-600 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl hover:shadow-blue-500/25 group-hover:shadow-blue-500/40 overflow-hidden relative"
-                  >
-                    <span class="relative z-10 flex items-center justify-center gap-2">
-                      <svg class="w-5 h-5 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-                      </svg>
-                      Get This Service
-                    </span>
-                    <!-- Button Shine Effect -->
-                    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-                  </button>
-                </div>
-              </div>
-
-              <!-- Hover Overlay -->
-              <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-cyan-500/5 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+              <a routerLink="/contact"
+                 class="inline-flex items-center gap-1.5 rounded-full border border-line px-4 py-2 text-sm font-medium text-ink transition-colors hover:border-ink/40">
+                Enquire <app-icon name="arrow-up-right" [size]="14"></app-icon>
+              </a>
             </div>
           </div>
         </div>
 
-        <!-- Call to Action -->
-        <div class="text-center mt-20" data-aos="fade-up" data-aos-delay="400">
-          <div class="relative bg-slate-800/60 backdrop-blur-xl rounded-3xl p-12 border border-blue-400/30 max-w-5xl mx-auto overflow-hidden">
-            <!-- Background Pattern -->
-            <div class="absolute inset-0 opacity-10">
-              <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-full blur-3xl transform translate-x-32 -translate-y-32"></div>
-              <div class="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-cyan-400 to-sky-400 rounded-full blur-2xl transform -translate-x-24 translate-y-24"></div>
-            </div>
-            
-            <div class="relative z-10">
-              <div class="inline-block relative mb-6">
-                <h3 class="text-4xl font-bold text-white mb-4">Need Something Custom?</h3>
-                <!-- Text Glow Effect -->
-                <div class="absolute inset-0 text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300 blur-sm opacity-50">
-                  Need Something Custom?
-                </div>
-              </div>
-              <p class="text-blue-200 mb-8 text-lg leading-relaxed max-w-3xl mx-auto">
-                We're always excited to work on unique projects. Let's discuss your specific requirements and create something amazing together. Our team is ready to bring your vision to life.
-              </p>
-              <div class="flex flex-col sm:flex-row gap-6 justify-center">
-                <a 
-                  href="/contact" 
-                  class="group inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-blue-500 via-cyan-500 to-sky-500 text-white rounded-2xl font-semibold hover:from-blue-600 hover:via-cyan-600 hover:to-sky-600 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl hover:shadow-blue-500/25 overflow-hidden relative"
-                >
-                  <span class="relative z-10 flex items-center gap-3">
-                    <svg class="w-6 h-6 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-                    </svg>
-                    Contact Us
-                  </span>
-                  <!-- Button Shine Effect -->
-                  <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-                </a>
-                <a 
-                  href="/projects" 
-                  class="group inline-flex items-center gap-3 px-10 py-5 bg-white/10 backdrop-blur-sm text-white rounded-2xl font-semibold hover:bg-white/20 transition-all duration-300 hover:scale-105 border border-white/20 hover:border-blue-400/50"
-                >
-                  <svg class="w-6 h-6 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
-                  </svg>
-                  View Our Work
-                </a>
-              </div>
-            </div>
+        <!-- Custom CTA -->
+        <div class="mt-12 flex flex-col items-start justify-between gap-6 rounded-2xl border border-line bg-surface p-8 md:flex-row md:items-center"
+             data-aos="fade-up">
+          <div>
+            <h3 class="font-display text-2xl font-semibold text-ink">Need something custom?</h3>
+            <p class="mt-2 max-w-xl text-muted">
+              Every project is different. Tell me what you're building and I'll put together a plan and a
+              fair quote — usually within 24 hours, no obligation.
+            </p>
           </div>
+          <a routerLink="/contact" class="btn-primary shrink-0">
+            Let's talk <app-icon name="arrow-up-right" [size]="17"></app-icon>
+          </a>
         </div>
       </div>
     </section>
   `,
-  styles: [`
-    /* Custom animations for enhanced user experience */
-    @keyframes float {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
-    }
-
-    .floating-element {
-      animation: float 3s ease-in-out infinite;
-    }
-
-    /* Custom scrollbar */
-    .overflow-y-auto::-webkit-scrollbar {
-      width: 6px;
-    }
-    
-    .overflow-y-auto::-webkit-scrollbar-track {
-      background: #f1f1f1;
-    }
-    
-    .overflow-y-auto::-webkit-scrollbar-thumb {
-      background: #c1c1c1;
-      border-radius: 3px;
-    }
-    
-    .overflow-y-auto::-webkit-scrollbar-thumb:hover {
-      background: #a8a8a8;
-    }
-  `]
+  styles: [],
 })
 export class ServicesComponent implements OnInit {
   services: Service[] = [];
   isLoading = true;
+
+  private icons = ['globe', 'smartphone', 'server', 'palette', 'code', 'layers'];
 
   constructor(private portfolioService: PortfolioService, private cdr: ChangeDetectorRef) {}
 
@@ -284,165 +112,28 @@ export class ServicesComponent implements OnInit {
     this.loadServicesData();
   }
 
+  iconFor(i: number): string {
+    return this.icons[i % this.icons.length];
+  }
+
   loadServicesData() {
     this.isLoading = true;
     this.portfolioService.getServices()
       .pipe(
-        timeout(10000), // 10 seconds timeout
-        catchError(error => {
-          console.error('Error loading services:', error);
-          // Fallback to sample data
-          return of(this.getSampleServices());
-        })
+        timeout(10000),
+        catchError(() => of([] as Service[])),
       )
       .subscribe({
         next: (data) => {
-          this.services = data;
+          this.services = data || [];
           this.isLoading = false;
-          this.cdr.detectChanges(); // Manually trigger change detection
+          this.cdr.detectChanges();
         },
-        error: (err) => {
-          console.error('Subscription error:', err);
-          this.services = this.getSampleServices();
+        error: () => {
+          this.services = [];
           this.isLoading = false;
-          this.cdr.detectChanges(); // Manually trigger change detection
-        }
+          this.cdr.detectChanges();
+        },
       });
-  }
-
-  getImageUrl(imageId: string): string {
-    if (!imageId) return '';
-    return `${environment.fileApiUrl}/${imageId}`;
-  }
-
-  contactForService(service: Service) {
-    // Navigate to contact page with service pre-selected
-    const contactUrl = `/contact?service=${encodeURIComponent(service.title)}`;
-    window.location.href = contactUrl;
-  }
-
-  private getSampleServices(): Service[] {
-    return [
-      {
-        id: 1,
-        title: 'Web Development',
-        description: 'Custom websites and web applications built with modern technologies and best practices.',
-        icon: '',
-        features: [
-          'Responsive Design',
-          'Modern Frameworks',
-          'SEO Optimization',
-          'Performance Optimization',
-          'Cross-browser Compatibility',
-          'Mobile-first Approach'
-        ],
-        price: '$500+',
-        duration: '2-4 weeks',
-        featured: true,
-        order: 1,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      },
-      {
-        id: 2,
-        title: 'Mobile App Development',
-        description: 'Native and cross-platform mobile applications for iOS and Android platforms.',
-        icon: '',
-        features: [
-          'iOS & Android Apps',
-          'Cross-platform Solutions',
-          'UI/UX Design',
-          'App Store Optimization',
-          'Push Notifications',
-          'Offline Functionality'
-        ],
-        price: '$1000+',
-        duration: '4-8 weeks',
-        featured: true,
-        order: 2,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      },
-      {
-        id: 3,
-        title: 'E-commerce Solutions',
-        description: 'Complete e-commerce platforms with payment integration and inventory management.',
-        icon: '',
-        features: [
-          'Payment Gateway Integration',
-          'Inventory Management',
-          'Order Processing',
-          'Customer Management',
-          'Analytics Dashboard',
-          'Security Features'
-        ],
-        price: '$800+',
-        duration: '3-6 weeks',
-        featured: false,
-        order: 3,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      },
-      {
-        id: 4,
-        title: 'UI/UX Design',
-        description: 'Beautiful and intuitive user interfaces designed for optimal user experience.',
-        icon: '',
-        features: [
-          'User Research',
-          'Wireframing',
-          'Prototyping',
-          'Visual Design',
-          'Usability Testing',
-          'Design Systems'
-        ],
-        price: '$300+',
-        duration: '1-3 weeks',
-        featured: false,
-        order: 4,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      },
-      {
-        id: 5,
-        title: 'API Development',
-        description: 'RESTful APIs and microservices for seamless data integration and communication.',
-        icon: '',
-        features: [
-          'RESTful APIs',
-          'GraphQL',
-          'Authentication',
-          'Rate Limiting',
-          'Documentation',
-          'Testing & Monitoring'
-        ],
-        price: '$400+',
-        duration: '2-4 weeks',
-        featured: false,
-        order: 5,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      },
-      {
-        id: 6,
-        title: 'Consulting & Support',
-        description: 'Technical consulting and ongoing support for your digital projects.',
-        icon: '',
-        features: [
-          'Technical Consulting',
-          'Code Review',
-          'Performance Audit',
-          'Security Assessment',
-          'Training & Support',
-          'Maintenance Plans'
-        ],
-        price: '$100/hour',
-        duration: 'Ongoing',
-        featured: false,
-        order: 6,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      }
-    ];
   }
 }

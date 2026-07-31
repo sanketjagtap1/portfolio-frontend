@@ -1,48 +1,17 @@
-/* App-specific styles - Dark theme */
+/* App shell — editorial dark theme */
 .app-container {
-  @apply min-h-screen bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950;
+  min-height: 100vh;
+  background-color: #0a0a0b; /* canvas */
   display: flex;
   flex-direction: column;
 }
 
 .main-content {
-  @apply flex-1;
-  padding-top: 4rem; /* Account for fixed header */
+  flex: 1 1 auto;
+  padding-top: 4rem; /* clear the fixed header */
 }
 
-/* Admin content styling - no top padding since admin nav handles spacing */
+/* Admin content: admin nav handles its own spacing */
 .main-content.admin-content {
   padding-top: 0;
-}
-
-/* Ensure proper spacing for sections */
-.section {
-  @apply py-16 px-4;
-}
-
-.container {
-  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
-}
-
-/* Smooth scrolling */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Custom scrollbar for webkit browsers */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.1);
-}
-
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(45deg, #3b82f6, #0ea5e9);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(45deg, #2563eb, #0284c7);
 }

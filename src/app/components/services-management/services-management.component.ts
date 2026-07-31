@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AdminNavComponent } from '../admin-nav/admin-nav.component';
+import { IconComponent } from '../ui/icon.component';
 import { timeout, catchError, of } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
@@ -23,47 +24,48 @@ export interface Service {
 @Component({
   selector: 'app-services-management',
   standalone: true,
-  imports: [CommonModule, FormsModule, AdminNavComponent],
+  imports: [CommonModule, FormsModule, AdminNavComponent, IconComponent],
   template: `
-    <div class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950">
+    <div class="min-h-screen bg-canvas text-ink">
       <app-admin-nav></app-admin-nav>
-      
-      <div class="max-w-7xl mx-auto px-4 py-8">
+
+      <div class="mx-auto max-w-shell px-4 md:px-6 py-8 md:py-10">
         <!-- Header -->
         <div class="mb-8">
-          <h1 class="text-3xl font-bold text-white mb-2">Services Management</h1>
-          <p class="text-blue-200">Manage your service offerings and pricing</p>
+          <span class="kicker mb-3">SERVICES</span>
+          <h1 class="font-display text-3xl md:text-4xl font-semibold text-ink mt-3">Services Management</h1>
+          <p class="text-muted mt-2">Manage your service offerings and pricing</p>
         </div>
 
         <!-- Add Service Form -->
-        <div class="bg-slate-800/80 backdrop-blur-lg rounded-xl shadow-xl p-8 mb-8 border border-blue-400/30">
-          <h2 class="text-2xl font-bold text-white mb-6">{{ editingService ? 'Edit Service' : 'Add New Service' }}</h2>
-          
+        <div class="card mb-8">
+          <h2 class="font-display text-2xl font-semibold text-ink mb-6">{{ editingService ? 'Edit Service' : 'Add New Service' }}</h2>
+
           <form #serviceFormRef="ngForm" (ngSubmit)="onSubmit(serviceFormRef)" class="space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <!-- Service Title -->
               <div>
-                <label for="title" class="block text-sm font-medium text-gray-300 mb-2">Service Title *</label>
+                <label for="title" class="block text-xs font-mono uppercase tracking-[0.15em] text-faint mb-2">Service Title *</label>
                 <input
                   type="text"
                   id="title"
                   name="title"
                   [(ngModel)]="serviceForm.title"
                   required
-                  class="w-full px-4 py-3 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-slate-700 text-white placeholder-gray-400"
+                  class="w-full rounded-xl border border-line bg-surface2 px-4 py-3 text-ink"
                   placeholder="e.g., Web Development"
                 />
               </div>
 
               <!-- Order -->
               <div>
-                <label for="order" class="block text-sm font-medium text-gray-300 mb-2">Display Order</label>
+                <label for="order" class="block text-xs font-mono uppercase tracking-[0.15em] text-faint mb-2">Display Order</label>
                 <input
                   type="number"
                   id="order"
                   name="order"
                   [(ngModel)]="serviceForm.order"
-                  class="w-full px-4 py-3 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-slate-700 text-white placeholder-gray-400"
+                  class="w-full rounded-xl border border-line bg-surface2 px-4 py-3 text-ink"
                   placeholder="1"
                 />
               </div>
@@ -71,43 +73,45 @@ export interface Service {
 
             <!-- Description -->
             <div>
-                <label for="description" class="block text-sm font-medium text-gray-300 mb-2">Description *</label>
+                <label for="description" class="block text-xs font-mono uppercase tracking-[0.15em] text-faint mb-2">Description *</label>
               <textarea
                 id="description"
                 name="description"
                 [(ngModel)]="serviceForm.description"
                 required
                 rows="4"
-                class="w-full px-4 py-3 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-slate-700 text-white placeholder-gray-400"
+                class="w-full rounded-xl border border-line bg-surface2 px-4 py-3 text-ink"
                 placeholder="Describe what this service includes..."
               ></textarea>
             </div>
 
             <!-- Features -->
             <div>
-                <label class="block text-sm font-medium text-gray-300 mb-2">Features</label>
+                <label class="block text-xs font-mono uppercase tracking-[0.15em] text-faint mb-2">Features</label>
               <div class="space-y-2">
                 <div *ngFor="let feature of serviceForm.features; let i = index" class="flex items-center gap-2">
                   <input
                     type="text"
                     [(ngModel)]="serviceForm.features[i]"
                     name="feature-{{i}}"
-                    class="flex-1 px-4 py-2 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-slate-700 text-white placeholder-gray-400"
+                    class="flex-1 rounded-xl border border-line bg-surface2 px-4 py-2 text-ink"
                     placeholder="Feature description"
                   />
                   <button
                     type="button"
                     (click)="removeFeature(i)"
-                    class="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200"
+                    class="inline-flex items-center justify-center gap-2 rounded-full border border-red-500/25 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-300 transition-colors hover:bg-red-500/20"
                   >
+                    <app-icon name="trash" [size]="15"></app-icon>
                     Remove
                   </button>
                 </div>
                 <button
                   type="button"
                   (click)="addFeature()"
-                  class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200"
+                  class="btn-ghost"
                 >
+                  <app-icon name="plus" [size]="16"></app-icon>
                   Add Feature
                 </button>
               </div>
@@ -116,26 +120,26 @@ export interface Service {
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
               <!-- Price -->
               <div>
-                <label for="price" class="block text-sm font-medium text-gray-300 mb-2">Price</label>
+                <label for="price" class="block text-xs font-mono uppercase tracking-[0.15em] text-faint mb-2">Price</label>
                 <input
                   type="text"
                   id="price"
                   name="price"
                   [(ngModel)]="serviceForm.price"
-                  class="w-full px-4 py-3 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-slate-700 text-white placeholder-gray-400"
+                  class="w-full rounded-xl border border-line bg-surface2 px-4 py-3 text-ink"
                   placeholder="e.g., $500+"
                 />
               </div>
 
               <!-- Duration -->
               <div>
-                <label for="duration" class="block text-sm font-medium text-gray-300 mb-2">Duration</label>
+                <label for="duration" class="block text-xs font-mono uppercase tracking-[0.15em] text-faint mb-2">Duration</label>
                 <input
                   type="text"
                   id="duration"
                   name="duration"
                   [(ngModel)]="serviceForm.duration"
-                  class="w-full px-4 py-3 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-slate-700 text-white placeholder-gray-400"
+                  class="w-full rounded-xl border border-line bg-surface2 px-4 py-3 text-ink"
                   placeholder="e.g., 2-4 weeks"
                 />
               </div>
@@ -147,43 +151,46 @@ export interface Service {
                   id="featured"
                   name="featured"
                   [(ngModel)]="serviceForm.featured"
-                  class="w-4 h-4 text-blue-400 bg-slate-700 border-gray-600 rounded focus:ring-blue-500"
+                  class="w-4 h-4 accent-accent rounded border-line"
                 />
-                <label for="featured" class="ml-2 text-sm font-medium text-gray-300">Featured Service</label>
+                <label for="featured" class="ml-2 text-sm font-medium text-muted">Featured Service</label>
               </div>
             </div>
 
             <!-- Icon Upload -->
             <div>
-              <label class="block text-sm font-medium text-gray-300 mb-2">Service Icon</label>
+              <label class="block text-xs font-mono uppercase tracking-[0.15em] text-faint mb-2">Service Icon</label>
               <div class="flex items-center gap-4">
                 <input
                   type="file"
                   #fileInput
                   (change)="onFileSelected($event)"
                   accept="image/*"
-                  class="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-500/20"
+                  class="block w-full text-sm text-muted file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-accent/10 file:text-accent hover:file:bg-accent/20"
                 />
-                <div *ngIf="serviceForm.icon" class="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
+                <div *ngIf="serviceForm.icon" class="w-16 h-16 rounded-xl border border-line bg-white/[0.02] flex items-center justify-center">
                   <img [src]="getImageUrl(serviceForm.icon)" alt="Icon preview" class="w-12 h-12 object-contain" />
                 </div>
               </div>
             </div>
 
             <!-- Form Actions -->
-            <div class="flex gap-4 pt-6 border-t border-gray-200">
+            <div class="flex gap-4 pt-6 border-t border-line">
               <button
                 type="submit"
                 [disabled]="isSubmitting"
-                class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                class="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
               >
+                <app-icon *ngIf="isSubmitting" name="loader" [size]="16" class="animate-spin"></app-icon>
+                <app-icon *ngIf="!isSubmitting" name="save" [size]="16"></app-icon>
                 {{ isSubmitting ? 'Saving...' : (editingService ? 'Update Service' : 'Add Service') }}
               </button>
               <button
                 type="button"
                 (click)="resetForm()"
-                class="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors duration-200"
+                class="btn-ghost"
               >
+                <app-icon name="x" [size]="16"></app-icon>
                 Cancel
               </button>
             </div>
@@ -191,63 +198,60 @@ export interface Service {
         </div>
 
         <!-- Services List -->
-        <div class="bg-slate-800/80 backdrop-blur-lg rounded-xl shadow-xl border border-blue-400/30 p-8">
-          <h2 class="text-2xl font-bold text-white mb-6">All Services</h2>
-          
+        <div class="card">
+          <h2 class="font-display text-2xl font-semibold text-ink mb-6">All Services</h2>
+
           <!-- Loading State -->
           <div *ngIf="isLoading" class="flex items-center justify-center h-32">
-            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <app-icon name="loader" [size]="32" class="animate-spin text-accent"></app-icon>
           </div>
 
           <!-- Services Grid -->
           <div *ngIf="!isLoading && services.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div *ngFor="let service of services" class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow duration-200">
+            <div *ngFor="let service of services" class="rounded-2xl border border-line bg-white/[0.02] p-6 transition-colors hover:border-accent/30">
               <!-- Service Header -->
               <div class="flex items-start justify-between mb-4">
                 <div class="flex items-center gap-3">
-                  <div class="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
-                    <img 
-                      *ngIf="service.icon" 
-                      [src]="getImageUrl(service.icon)" 
+                  <div class="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center">
+                    <img
+                      *ngIf="service.icon"
+                      [src]="getImageUrl(service.icon)"
                       [alt]="service.title"
                       class="w-8 h-8 object-contain"
                     />
-                    <svg 
-                      *ngIf="!service.icon" 
-                      class="w-8 h-8 text-blue-400" 
-                      fill="none" 
-                      stroke="currentColor" 
-                      viewBox="0 0 24 24"
-                    >
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-                    </svg>
+                    <app-icon
+                      *ngIf="!service.icon"
+                      name="layers"
+                      [size]="28"
+                      class="text-accent"
+                    ></app-icon>
                   </div>
                   <div>
-                    <h3 class="font-semibold text-white">{{ service.title }}</h3>
-                    <p class="text-sm text-gray-400">Order: {{ service.order }}</p>
+                    <h3 class="font-semibold text-ink">{{ service.title }}</h3>
+                    <p class="text-sm text-faint">Order: {{ service.order }}</p>
                   </div>
                 </div>
-                <div *ngIf="service.featured" class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-medium rounded-full">
+                <div *ngIf="service.featured" class="chip !text-accent !border-accent/30 !bg-accent/10">
                   Featured
                 </div>
               </div>
 
               <!-- Service Description -->
-              <p class="text-gray-300 text-sm mb-4 line-clamp-3">{{ service.description }}</p>
+              <p class="text-muted text-sm mb-4 line-clamp-3">{{ service.description }}</p>
 
               <!-- Service Details -->
               <div class="space-y-2 mb-4">
                 <div *ngIf="service.price" class="flex justify-between text-sm">
-                  <span class="text-gray-400">Price:</span>
-                  <span class="font-medium text-white">{{ service.price }}</span>
+                  <span class="text-faint">Price:</span>
+                  <span class="font-medium text-ink">{{ service.price }}</span>
                 </div>
                 <div *ngIf="service.duration" class="flex justify-between text-sm">
-                  <span class="text-gray-400">Duration:</span>
-                  <span class="font-medium text-white">{{ service.duration }}</span>
+                  <span class="text-faint">Duration:</span>
+                  <span class="font-medium text-ink">{{ service.duration }}</span>
                 </div>
                 <div class="flex justify-between text-sm">
-                  <span class="text-gray-400">Features:</span>
-                  <span class="font-medium text-white">{{ service.features.length }}</span>
+                  <span class="text-faint">Features:</span>
+                  <span class="font-medium text-ink">{{ service.features.length }}</span>
                 </div>
               </div>
 
@@ -255,14 +259,16 @@ export interface Service {
               <div class="flex gap-2">
                 <button
                   (click)="editService(service)"
-                  class="flex-1 px-3 py-2 bg-blue-500 text-white text-sm rounded-lg hover:bg-blue-600 transition-colors duration-200"
+                  class="btn-primary flex-1 !px-4 !py-2 text-sm"
                 >
+                  <app-icon name="pencil" [size]="15"></app-icon>
                   Edit
                 </button>
                 <button
                   (click)="deleteService(service.id)"
-                  class="flex-1 px-3 py-2 bg-red-500 text-white text-sm rounded-lg hover:bg-red-600 transition-colors duration-200"
+                  class="flex-1 inline-flex items-center justify-center gap-2 rounded-full border border-red-500/25 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-300 transition-colors hover:bg-red-500/20"
                 >
+                  <app-icon name="trash" [size]="15"></app-icon>
                   Delete
                 </button>
               </div>
@@ -271,13 +277,11 @@ export interface Service {
 
           <!-- Empty State -->
           <div *ngIf="!isLoading && services.length === 0" class="text-center py-12">
-            <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-              </svg>
+            <div class="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <app-icon name="layers" [size]="28" class="text-accent"></app-icon>
             </div>
-            <h3 class="text-lg font-medium text-white mb-2">No services yet</h3>
-            <p class="text-gray-400">Add your first service to get started.</p>
+            <h3 class="text-lg font-medium text-ink mb-2">No services yet</h3>
+            <p class="text-muted">Add your first service to get started.</p>
           </div>
         </div>
       </div>

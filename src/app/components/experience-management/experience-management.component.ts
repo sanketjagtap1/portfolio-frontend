@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AdminNavComponent } from '../admin-nav/admin-nav.component';
+import { IconComponent } from '../ui/icon.component';
 import { environment } from '../../../environments/environment';
 
 interface Experience {
@@ -23,240 +24,220 @@ interface Experience {
 @Component({
   selector: 'app-experience-management',
   standalone: true,
-  imports: [CommonModule, FormsModule, AdminNavComponent],
+  imports: [CommonModule, FormsModule, AdminNavComponent, IconComponent],
   template: `
-    <div class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <div class="min-h-screen bg-canvas text-ink">
       <!-- Admin Navigation -->
       <app-admin-nav></app-admin-nav>
 
       <!-- Main Content -->
-      <main class="container mx-auto px-6 py-12">
+      <main class="mx-auto max-w-shell px-4 md:px-6 py-8 md:py-10">
         <!-- Page Header -->
         <div class="mb-12">
-          <div class="relative">
-            <div class="absolute inset-0 bg-gradient-to-r from-green-500/10 via-emerald-500/10 to-teal-500/10 rounded-3xl blur-2xl"></div>
-            <div class="relative bg-gradient-to-r from-slate-800/50 to-slate-700/50 backdrop-blur-xl rounded-3xl p-8 border border-slate-600/30 shadow-2xl">
-              <div class="flex items-center justify-between">
-                <div>
-                  <h1 class="text-4xl font-bold text-white mb-2">Experience Management</h1>
-                  <p class="text-slate-300 text-lg">Manage your professional experience entries</p>
-                </div>
-                <button 
-                  (click)="showAddForm()"
-                  class="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl hover:from-green-600 hover:to-emerald-600 transition-all duration-300 font-medium flex items-center gap-2 shadow-lg hover:shadow-green-500/25"
-                >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 5v14m7-7H5"/>
-                  </svg>
-                  Add Experience
-                </button>
+          <div class="card">
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="kicker mb-3">EXPERIENCE</span>
+                <h1 class="font-display text-3xl md:text-4xl font-semibold text-ink mt-3">Experience Management</h1>
+                <p class="text-muted text-lg mt-2">Manage your professional experience entries</p>
               </div>
+              <button
+                (click)="showAddForm()"
+                class="btn-primary"
+              >
+                <app-icon name="plus" [size]="20"></app-icon>
+                Add Experience
+              </button>
             </div>
           </div>
         </div>
 
         <!-- Experience Form -->
         <div *ngIf="showForm" class="mb-12">
-          <div class="relative">
-            <div class="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-sky-500/10 rounded-3xl blur-2xl"></div>
-            <div class="relative bg-gradient-to-r from-slate-800/50 to-slate-700/50 backdrop-blur-xl rounded-3xl p-8 border border-slate-600/30 shadow-2xl">
-              <h2 class="text-2xl font-bold text-white mb-6">{{ editingExperience ? 'Edit Experience' : 'Add New Experience' }}</h2>
-              
-              <form #experienceForm="ngForm" (ngSubmit)="saveExperience()" class="space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <!-- Company -->
-                  <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-2">Company *</label>
-                    <input 
-                      type="text" 
-                      [(ngModel)]="experienceFormData.company" 
-                      name="company"
-                      required
-                      class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="Enter company name"
-                    >
-                  </div>
+          <div class="card">
+            <h2 class="font-display text-2xl font-semibold text-ink mb-6">{{ editingExperience ? 'Edit Experience' : 'Add New Experience' }}</h2>
 
-                  <!-- Position -->
-                  <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-2">Position *</label>
-                    <input 
-                      type="text" 
-                      [(ngModel)]="experienceFormData.position" 
-                      name="position"
-                      required
-                      class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="Enter job position"
-                    >
-                  </div>
-
-                  <!-- Location -->
-                  <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-2">Location</label>
-                    <input 
-                      type="text" 
-                      [(ngModel)]="experienceFormData.location" 
-                      name="location"
-                      class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="Enter location (e.g., Pune, India)"
-                    >
-                  </div>
-
-                  <!-- Order -->
-                  <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-2">Display Order</label>
-                    <input 
-                      type="number" 
-                      [(ngModel)]="experienceFormData.order" 
-                      name="order"
-                      class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="Display order (lower numbers first)"
-                    >
-                  </div>
-
-                  <!-- Start Date -->
-                  <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-2">Start Date *</label>
-                    <input 
-                      type="month" 
-                      [(ngModel)]="experienceFormData.startDate" 
-                      name="startDate"
-                      required
-                      class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    >
-                  </div>
-
-                  <!-- End Date -->
-                  <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-2">End Date</label>
-                    <input 
-                      type="month" 
-                      [(ngModel)]="experienceFormData.endDate" 
-                      name="endDate"
-                      [disabled]="experienceFormData.current"
-                      class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50"
-                    >
-                  </div>
-                </div>
-
-                <!-- Current Job -->
-                <div class="flex items-center gap-3">
-                  <input 
-                    type="checkbox" 
-                    [(ngModel)]="experienceFormData.current" 
-                    name="current"
-                    id="current"
-                    class="w-5 h-5 text-blue-600 bg-slate-700 border-slate-600 rounded focus:ring-blue-500 focus:ring-2"
-                  >
-                  <label for="current" class="text-slate-300 font-medium">This is my current position</label>
-                </div>
-
-                <!-- Description -->
+            <form #experienceForm="ngForm" (ngSubmit)="saveExperience()" class="space-y-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Company -->
                 <div>
-                  <label class="block text-sm font-medium text-slate-300 mb-2">Description *</label>
-                  <textarea 
-                    [(ngModel)]="experienceFormData.description" 
-                    name="description"
+                  <label class="block text-xs font-mono uppercase tracking-[0.15em] text-faint mb-2">Company *</label>
+                  <input
+                    type="text"
+                    [(ngModel)]="experienceFormData.company"
+                    name="company"
                     required
-                    rows="4"
-                    class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-                    placeholder="Describe your role and responsibilities"
-                  ></textarea>
+                    class="w-full rounded-xl border border-line bg-surface2 px-4 py-3 text-ink"
+                    placeholder="Enter company name"
+                  >
                 </div>
 
-                <!-- Technologies -->
+                <!-- Position -->
                 <div>
-                  <label class="block text-sm font-medium text-slate-300 mb-2">Technologies Used</label>
-                  <input 
-                    type="text" 
-                    [(ngModel)]="technologiesInput" 
-                    name="technologies"
-                    class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Enter technologies separated by commas (e.g., Angular, Node.js, MongoDB)"
-                    (blur)="updateTechnologies()"
+                  <label class="block text-xs font-mono uppercase tracking-[0.15em] text-faint mb-2">Position *</label>
+                  <input
+                    type="text"
+                    [(ngModel)]="experienceFormData.position"
+                    name="position"
+                    required
+                    class="w-full rounded-xl border border-line bg-surface2 px-4 py-3 text-ink"
+                    placeholder="Enter job position"
                   >
-                  <p class="text-xs text-slate-400 mt-2">Separate multiple technologies with commas</p>
                 </div>
 
-                <!-- Form Actions -->
-                <div class="flex items-center gap-4 pt-6">
-                  <button 
-                    type="submit"
-                    [disabled]="experienceForm.invalid || isLoading"
-                    class="px-6 py-3 bg-gradient-to-r from-blue-500 to-sky-500 text-white rounded-xl hover:from-blue-600 hover:to-sky-600 transition-all duration-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                <!-- Location -->
+                <div>
+                  <label class="block text-xs font-mono uppercase tracking-[0.15em] text-faint mb-2">Location</label>
+                  <input
+                    type="text"
+                    [(ngModel)]="experienceFormData.location"
+                    name="location"
+                    class="w-full rounded-xl border border-line bg-surface2 px-4 py-3 text-ink"
+                    placeholder="Enter location (e.g., Pune, India)"
                   >
-                    <svg *ngIf="isLoading" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="animate-spin">
-                      <path d="M21 12a9 9 0 11-6.219-8.56"/>
-                    </svg>
-                    {{ isLoading ? 'Saving...' : (editingExperience ? 'Update Experience' : 'Add Experience') }}
-                  </button>
-                  <button 
-                    type="button"
-                    (click)="cancelEdit()"
-                    class="px-6 py-3 bg-slate-600 text-white rounded-xl hover:bg-slate-700 transition-all duration-300 font-medium"
-                  >
-                    Cancel
-                  </button>
                 </div>
-              </form>
-            </div>
+
+                <!-- Order -->
+                <div>
+                  <label class="block text-xs font-mono uppercase tracking-[0.15em] text-faint mb-2">Display Order</label>
+                  <input
+                    type="number"
+                    [(ngModel)]="experienceFormData.order"
+                    name="order"
+                    class="w-full rounded-xl border border-line bg-surface2 px-4 py-3 text-ink"
+                    placeholder="Display order (lower numbers first)"
+                  >
+                </div>
+
+                <!-- Start Date -->
+                <div>
+                  <label class="block text-xs font-mono uppercase tracking-[0.15em] text-faint mb-2">Start Date *</label>
+                  <input
+                    type="month"
+                    [(ngModel)]="experienceFormData.startDate"
+                    name="startDate"
+                    required
+                    class="w-full rounded-xl border border-line bg-surface2 px-4 py-3 text-ink"
+                  >
+                </div>
+
+                <!-- End Date -->
+                <div>
+                  <label class="block text-xs font-mono uppercase tracking-[0.15em] text-faint mb-2">End Date</label>
+                  <input
+                    type="month"
+                    [(ngModel)]="experienceFormData.endDate"
+                    name="endDate"
+                    [disabled]="experienceFormData.current"
+                    class="w-full rounded-xl border border-line bg-surface2 px-4 py-3 text-ink disabled:opacity-50"
+                  >
+                </div>
+              </div>
+
+              <!-- Current Job -->
+              <div class="flex items-center gap-3">
+                <input
+                  type="checkbox"
+                  [(ngModel)]="experienceFormData.current"
+                  name="current"
+                  id="current"
+                  class="w-5 h-5 rounded border-line"
+                >
+                <label for="current" class="text-muted font-medium">This is my current position</label>
+              </div>
+
+              <!-- Description -->
+              <div>
+                <label class="block text-xs font-mono uppercase tracking-[0.15em] text-faint mb-2">Description *</label>
+                <textarea
+                  [(ngModel)]="experienceFormData.description"
+                  name="description"
+                  required
+                  rows="4"
+                  class="w-full rounded-xl border border-line bg-surface2 px-4 py-3 text-ink resize-none"
+                  placeholder="Describe your role and responsibilities"
+                ></textarea>
+              </div>
+
+              <!-- Technologies -->
+              <div>
+                <label class="block text-xs font-mono uppercase tracking-[0.15em] text-faint mb-2">Technologies Used</label>
+                <input
+                  type="text"
+                  [(ngModel)]="technologiesInput"
+                  name="technologies"
+                  class="w-full rounded-xl border border-line bg-surface2 px-4 py-3 text-ink"
+                  placeholder="Enter technologies separated by commas (e.g., Angular, Node.js, MongoDB)"
+                  (blur)="updateTechnologies()"
+                >
+                <p class="text-xs text-faint mt-2">Separate multiple technologies with commas</p>
+              </div>
+
+              <!-- Form Actions -->
+              <div class="flex items-center gap-4 pt-6">
+                <button
+                  type="submit"
+                  [disabled]="experienceForm.invalid || isLoading"
+                  class="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <app-icon *ngIf="isLoading" name="loader" [size]="16" class="animate-spin"></app-icon>
+                  {{ isLoading ? 'Saving...' : (editingExperience ? 'Update Experience' : 'Add Experience') }}
+                </button>
+                <button
+                  type="button"
+                  (click)="cancelEdit()"
+                  class="btn-ghost"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
           </div>
         </div>
 
         <!-- Experience List -->
         <div *ngIf="experiences.length > 0" class="space-y-6">
-          <div 
-            *ngFor="let experience of experiences; let i = index" 
-            class="relative group"
+          <div
+            *ngFor="let experience of experiences; let i = index"
+            class="group"
           >
-            <div class="relative">
-              <div class="absolute inset-0 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-2xl blur-lg group-hover:blur-xl transition-all duration-500"></div>
-              <div class="relative bg-gradient-to-br from-slate-800/80 to-slate-700/80 backdrop-blur-xl rounded-2xl p-6 border border-slate-600/30 shadow-xl hover:shadow-green-500/25 transition-all duration-500 hover:-translate-y-2 group-hover:border-green-400/50">
-                <div class="flex items-start justify-between mb-4">
-                  <div class="flex-1">
-                    <h3 class="text-xl font-bold text-white mb-1">{{ experience.position }}</h3>
-                    <h4 class="text-lg font-semibold text-green-300 mb-2">{{ experience.company }}</h4>
-                    <div class="flex items-center gap-4 text-sm text-slate-400">
-                      <span>{{ formatDate(experience.startDate) }} - {{ experience.current ? 'Present' : formatDate(experience.endDate || '') }}</span>
-                      <span *ngIf="experience.location">📍 {{ experience.location }}</span>
-                      <span>#{{ experience.order }}</span>
-                    </div>
-                  </div>
-                  <div class="flex items-center gap-2">
-                    <button 
-                      (click)="editExperience(experience)"
-                      class="p-2 text-blue-400 hover:text-blue-300 hover:bg-blue-500/20 rounded-lg transition-all duration-300"
-                    >
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                      </svg>
-                    </button>
-                    <button 
-                      (click)="deleteExperience(experience.id!)"
-                      class="p-2 text-red-400 hover:text-red-300 hover:bg-red-500/20 rounded-lg transition-all duration-300"
-                    >
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polyline points="3,6 5,6 21,6"/>
-                        <path d="M19,6v14a2,2,0,0,1-2,2H7a2,2,0,0,1-2-2V6m3,0V4a2,2,0,0,1,2-2h4a2,2,0,0,1,2,2V6"/>
-                        <line x1="10" y1="11" x2="10" y2="17"/>
-                        <line x1="14" y1="11" x2="14" y2="17"/>
-                      </svg>
-                    </button>
+            <div class="rounded-2xl border border-line bg-surface p-6 transition-colors group-hover:border-accent/30">
+              <div class="flex items-start justify-between mb-4">
+                <div class="flex-1">
+                  <h3 class="font-display text-xl font-semibold text-ink mb-1">{{ experience.position }}</h3>
+                  <h4 class="text-lg font-semibold text-accent mb-2">{{ experience.company }}</h4>
+                  <div class="flex items-center gap-4 text-sm text-faint">
+                    <span>{{ formatDate(experience.startDate) }} - {{ experience.current ? 'Present' : formatDate(experience.endDate || '') }}</span>
+                    <span *ngIf="experience.location" class="inline-flex items-center gap-1"><app-icon name="map-pin" [size]="14"></app-icon>{{ experience.location }}</span>
+                    <span>#{{ experience.order }}</span>
                   </div>
                 </div>
-                
-                <p class="text-slate-300 mb-4 leading-relaxed">{{ experience.description }}</p>
-                
-                <div *ngIf="experience.technologies && experience.technologies.length > 0">
-                  <div class="flex flex-wrap gap-2">
-                    <span 
-                      *ngFor="let tech of experience.technologies" 
-                      class="px-3 py-1 bg-green-500/20 text-green-300 rounded-lg text-sm font-medium border border-green-400/30"
-                    >
-                      {{ tech }}
-                    </span>
-                  </div>
+                <div class="flex items-center gap-2">
+                  <button
+                    (click)="editExperience(experience)"
+                    class="p-2 text-muted hover:text-accent rounded-lg transition-colors"
+                  >
+                    <app-icon name="pencil" [size]="18"></app-icon>
+                  </button>
+                  <button
+                    (click)="deleteExperience(experience.id!)"
+                    class="p-2 text-red-300 hover:text-red-200 rounded-lg transition-colors"
+                  >
+                    <app-icon name="trash" [size]="18"></app-icon>
+                  </button>
+                </div>
+              </div>
+
+              <p class="text-muted mb-4 leading-relaxed">{{ experience.description }}</p>
+
+              <div *ngIf="experience.technologies && experience.technologies.length > 0">
+                <div class="flex flex-wrap gap-2">
+                  <span
+                    *ngFor="let tech of experience.technologies"
+                    class="chip"
+                  >
+                    {{ tech }}
+                  </span>
                 </div>
               </div>
             </div>
@@ -265,18 +246,14 @@ interface Experience {
 
         <!-- Empty State -->
         <div *ngIf="!isLoading && experiences.length === 0" class="text-center py-20">
-          <div class="w-24 h-24 bg-slate-700/50 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-slate-400">
-              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-              <polyline points="3.27,6.96 12,12.01 20.73,6.96"/>
-              <line x1="12" y1="22.08" x2="12" y2="12"/>
-            </svg>
+          <div class="w-24 h-24 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-6">
+            <app-icon name="briefcase" [size]="40" class="text-accent"></app-icon>
           </div>
-          <h3 class="text-xl font-semibold text-white mb-2">No Experience Entries</h3>
-          <p class="text-slate-400 mb-6">Start building your professional experience portfolio</p>
-          <button 
+          <h3 class="font-display text-xl font-semibold text-ink mb-2">No Experience Entries</h3>
+          <p class="text-muted mb-6">Start building your professional experience portfolio</p>
+          <button
             (click)="showAddForm()"
-            class="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl hover:from-green-600 hover:to-emerald-600 transition-all duration-300 font-medium"
+            class="btn-primary"
           >
             Add Your First Experience
           </button>
@@ -284,36 +261,13 @@ interface Experience {
 
         <!-- Loading State -->
         <div *ngIf="isLoading" class="text-center py-20">
-          <div class="w-16 h-16 border-4 border-green-500/30 border-t-green-400 rounded-full animate-spin mx-auto mb-4"></div>
-          <p class="text-slate-300">Loading experience data...</p>
+          <app-icon name="loader" [size]="48" class="animate-spin text-accent mx-auto mb-4"></app-icon>
+          <p class="text-muted">Loading experience data...</p>
         </div>
       </main>
     </div>
   `,
-  styles: [`
-    button:hover:not(:disabled) {
-      transform: translateY(-1px);
-    }
-
-    /* Custom scrollbar */
-    ::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 3px;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: linear-gradient(45deg, #10b981, #059669);
-      border-radius: 3px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-      background: linear-gradient(45deg, #059669, #047857);
-    }
-  `]
+  styles: []
 })
 export class ExperienceManagementComponent implements OnInit {
   experiences: Experience[] = [];

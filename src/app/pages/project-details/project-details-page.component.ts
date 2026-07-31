@@ -2,8 +2,8 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { timeout, catchError, of } from 'rxjs';
-import { HeaderComponent } from '../../components/header/header.component';
 import { PortfolioService } from '../../services/portfolio.service';
+import { IconComponent } from '../../components/ui/icon.component';
 
 export interface ProjectImage {
   id: string;
@@ -30,228 +30,106 @@ export interface ProjectDetails {
 @Component({
   selector: 'app-project-details-page',
   standalone: true,
-  imports: [CommonModule, HeaderComponent],
+  imports: [CommonModule, IconComponent],
   template: `
-    <div class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950">
-      <!-- Header -->
-      <app-header></app-header>
+    <div class="min-h-screen">
+      <!-- Loading -->
+      <div *ngIf="isLoading" class="flex min-h-screen items-center justify-center">
+        <div class="h-10 w-10 animate-spin rounded-full border-2 border-line border-t-accent"></div>
+      </div>
 
-      <!-- Loading State -->
-      <div *ngIf="isLoading" class="flex items-center justify-center min-h-screen">
+      <!-- Error -->
+      <div *ngIf="error && !isLoading" class="flex min-h-screen items-center justify-center px-6">
         <div class="text-center">
-          <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-400 mx-auto mb-4"></div>
-          <p class="text-blue-200 text-lg">Loading project details...</p>
+          <h2 class="font-display text-2xl font-semibold text-ink">Project not found</h2>
+          <p class="mt-2 text-muted">{{ error }}</p>
+          <button (click)="goBack()" class="btn-primary mt-6">Back to projects</button>
         </div>
       </div>
 
-      <!-- Error State -->
-      <div *ngIf="error && !isLoading" class="flex items-center justify-center min-h-screen">
-        <div class="text-center">
-          <div class="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg class="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-          </div>
-          <h2 class="text-2xl font-bold text-white mb-2">Project Not Found</h2>
-          <p class="text-gray-300 mb-6">{{ error }}</p>
-          <button 
-            (click)="goBack()"
-            class="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors duration-200"
-          >
-            Go Back to Projects
-          </button>
-        </div>
-      </div>
-
-      <!-- Project Details -->
-      <div *ngIf="project && !isLoading && !error" class="max-w-7xl mx-auto px-4 py-8">
-        <!-- Back Button -->
-        <button 
-          (click)="goBack()"
-          class="mb-8 flex items-center gap-2 px-4 py-2 text-blue-200 hover:text-white hover:bg-white/10 rounded-lg transition-colors duration-200"
-        >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-          </svg>
-          <span>Back to Projects</span>
+      <!-- Details -->
+      <div *ngIf="project && !isLoading && !error" class="mx-auto max-w-shell px-6 pb-24 pt-24">
+        <!-- Back -->
+        <button (click)="goBack()" class="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-ink">
+          <app-icon name="arrow-right" [size]="15" class="rotate-180"></app-icon>
+          Back to projects
         </button>
 
-        <!-- Hero Section -->
-        <div class="bg-slate-800/80 backdrop-blur-lg rounded-2xl shadow-xl overflow-hidden mb-8 border border-blue-400/30">
-          <!-- Project Header -->
-          <div class="relative h-96 bg-gradient-to-br from-blue-600 via-cyan-600 to-sky-600">
-            <!-- Background Image -->
-            <div 
-              *ngIf="getProjectMainImage()" 
-              class="absolute inset-0 bg-cover bg-center"
-              [style.background-image]="'url(' + getImageUrl(getProjectMainImage()!) + ')'"
-            >
-              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
-            </div>
-            
-            <!-- Content -->
-            <div class="relative z-10 h-full flex items-end p-8">
-              <div class="text-white">
-                <h1 class="text-4xl md:text-5xl font-bold mb-4">{{ project.title }}</h1>
-                <p *ngIf="project.shortDescription" class="text-xl text-blue-100 mb-6 max-w-3xl">{{ project.shortDescription }}</p>
-                
-                <!-- Action Buttons -->
-                <div class="flex flex-col sm:flex-row gap-3">
-                  <a 
-                    *ngIf="project.githubUrl"
-                    [href]="project.githubUrl"
-                    target="_blank"
-                    class="inline-flex items-center gap-2 px-6 py-3 bg-white/20 backdrop-blur-sm text-white rounded-lg hover:bg-white/30 transition-all duration-200 border border-white/30"
-                  >
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                    </svg>
-                    <span>GitHub</span>
-                  </a>
-                  
-                  <a 
-                    *ngIf="project.liveUrl"
-                    [href]="project.liveUrl"
-                    target="_blank"
-                    class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg hover:from-blue-600 hover:to-cyan-600 transition-all duration-200 font-medium shadow-lg hover:shadow-xl"
-                  >
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                    </svg>
-                    <span>Live Demo</span>
-                  </a>
+        <!-- Title block -->
+        <div class="mt-8 max-w-3xl">
+          <h1 class="font-display text-4xl md:text-6xl font-semibold tracking-tightest text-ink">{{ project.title }}</h1>
+          <p *ngIf="project.shortDescription" class="mt-4 text-lg text-muted">{{ project.shortDescription }}</p>
 
-                  <a
-                    *ngIf="project.downloadUrl"
-                    [href]="project.downloadUrl"
-                    download
-                    class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg hover:from-green-600 hover:to-emerald-600 transition-all duration-200 font-medium shadow-lg hover:shadow-xl"
-                  >
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                    </svg>
-                    <span>Download APK</span>
-                  </a>
-                </div>
-
-                <p *ngIf="project.downloadUrl" class="text-xs text-blue-200/70 mt-3">
-                  Android only. After downloading, open the file and allow "Install from unknown sources" if prompted.
-                </p>
-              </div>
-            </div>
+          <div class="mt-6 flex flex-wrap gap-3">
+            <a *ngIf="project.liveUrl" [href]="project.liveUrl" target="_blank" rel="noopener noreferrer" class="btn-primary">
+              Live demo <app-icon name="arrow-up-right" [size]="17"></app-icon>
+            </a>
+            <a *ngIf="project.downloadUrl" [href]="project.downloadUrl"
+               class="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-6 py-3 font-semibold text-accent transition-colors hover:bg-accent/15">
+              <app-icon name="download" [size]="17"></app-icon> Download APK
+            </a>
+            <a *ngIf="project.githubUrl" [href]="project.githubUrl" target="_blank" rel="noopener noreferrer" class="btn-ghost">
+              <app-icon name="github" [size]="17"></app-icon> GitHub
+            </a>
           </div>
+          <p *ngIf="project.downloadUrl" class="mt-3 font-mono text-xs text-faint">
+            Android only — open the file and allow "Install from unknown sources" if prompted.
+          </p>
         </div>
 
-        <!-- Main Content Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <!-- Left Column - Main Content -->
-          <div class="lg:col-span-2 space-y-8">
-            <!-- Project Description -->
-            <div class="bg-slate-800/80 backdrop-blur-lg rounded-2xl shadow-xl p-8 border border-blue-400/30">
-              <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                <div class="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
-                  <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                  </svg>
-                </div>
-                About This Project
-              </h2>
-              <div class="prose prose-lg max-w-none text-gray-200 project-description" 
-                   [innerHTML]="project.description">
-              </div>
+        <!-- Cover -->
+        <div *ngIf="getProjectMainImage()" class="mt-10 flex justify-center overflow-hidden rounded-2xl border border-line bg-canvas p-3">
+          <img [src]="getImageUrl(getProjectMainImage()!)" [alt]="project.title"
+               class="max-h-[70vh] w-auto max-w-full rounded-xl object-contain" />
+        </div>
+
+        <!-- Content grid -->
+        <div class="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-3">
+          <div class="space-y-8 lg:col-span-2">
+            <div class="rounded-2xl border border-line bg-surface p-8">
+              <h2 class="font-mono text-xs uppercase tracking-[0.15em] text-faint">About this project</h2>
+              <div class="prose prose-invert mt-4 max-w-none project-description" [innerHTML]="project.description"></div>
             </div>
 
-            <!-- Image Gallery -->
-            <div *ngIf="project.images?.length! > 0" class="bg-slate-800/80 backdrop-blur-lg rounded-2xl shadow-xl p-8 border border-blue-400/30">
-              <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                <div class="w-8 h-8 bg-cyan-500/20 rounded-lg flex items-center justify-center">
-                  <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                  </svg>
-                </div>
-                Project Gallery
-                <span class="text-sm font-normal text-blue-200 bg-blue-500/20 px-3 py-1 rounded-full">
-                  {{ project.images.length }} {{ project.images.length === 1 ? 'image' : 'images' }}
-                </span>
+            <div *ngIf="project.images?.length! > 0" class="rounded-2xl border border-line bg-surface p-8">
+              <h2 class="font-mono text-xs uppercase tracking-[0.15em] text-faint">
+                Gallery · {{ project.images.length }} {{ project.images.length === 1 ? 'image' : 'images' }}
               </h2>
-              
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div 
-                  *ngFor="let image of project.images; let i = index"
-                  class="group cursor-pointer"
-                  (click)="openImageModal(image, i)"
-                >
-                  <div class="relative overflow-hidden rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300">
-                    <img 
-                      [src]="getImageUrl(image.url)" 
-                      [alt]="image.alt"
-                      class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-300 flex items-center justify-center">
-                      <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
-                          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/>
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
+              <div class="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2">
+                <div *ngFor="let image of project.images; let i = index" class="group cursor-pointer" (click)="openImageModal(image, i)">
+                  <div class="flex h-72 items-center justify-center overflow-hidden rounded-xl border border-line bg-canvas p-2">
+                    <img [src]="getImageUrl(image.url)" [alt]="image.alt"
+                         class="max-h-full w-auto max-w-full object-contain transition-transform duration-500 group-hover:scale-105" />
                   </div>
-                  <div class="mt-3">
-                    <h3 class="font-semibold text-white">{{ image.alt }}</h3>
-                    <p *ngIf="image.caption" class="text-sm text-gray-300 mt-1">{{ image.caption }}</p>
-                  </div>
+                  <h3 class="mt-3 font-medium text-ink">{{ image.alt }}</h3>
+                  <p *ngIf="image.caption" class="mt-1 text-sm text-muted">{{ image.caption }}</p>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Right Column - Sidebar -->
+          <!-- Sidebar -->
           <div class="space-y-6">
-            <!-- Technologies -->
-            <div class="bg-slate-800/80 backdrop-blur-lg rounded-2xl shadow-xl p-6 border border-blue-400/30">
-              <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-3">
-                <div class="w-6 h-6 bg-orange-500/20 rounded-lg flex items-center justify-center">
-                  <svg class="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
-                  </svg>
-                </div>
-                Technologies
-              </h3>
-              <div class="flex flex-wrap gap-2">
-                <span 
-                  *ngFor="let tech of project.technologies"
-                  class="px-3 py-2 bg-blue-500/20 text-blue-200 rounded-lg text-sm font-medium hover:bg-blue-500/30 transition-colors duration-200 border border-blue-400/30"
-                >
-                  {{ tech }}
-                </span>
+            <div class="rounded-2xl border border-line bg-surface p-6">
+              <h3 class="font-mono text-xs uppercase tracking-[0.15em] text-faint">Technologies</h3>
+              <div class="mt-4 flex flex-wrap gap-1.5">
+                <span *ngFor="let tech of project.technologies" class="chip">{{ tech }}</span>
               </div>
             </div>
 
-            <!-- Project Info -->
-            <div class="bg-slate-800/80 backdrop-blur-lg rounded-2xl shadow-xl p-6 border border-blue-400/30">
-              <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-3">
-                <div class="w-6 h-6 bg-green-500/20 rounded-lg flex items-center justify-center">
-                  <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                  </svg>
+            <div class="rounded-2xl border border-line bg-surface p-6">
+              <h3 class="font-mono text-xs uppercase tracking-[0.15em] text-faint">Project info</h3>
+              <dl class="mt-4 space-y-3 text-sm">
+                <div class="flex items-center justify-between border-b border-line pb-3">
+                  <dt class="text-muted">Created</dt><dd class="text-ink">{{ project.createdAt | date:'MMM yyyy' }}</dd>
                 </div>
-                Project Info
-              </h3>
-              <div class="space-y-3">
-                <div class="flex justify-between items-center py-2 border-b border-gray-600/50">
-                  <span class="text-gray-300">Created</span>
-                  <span class="font-medium text-white">{{ project.createdAt | date:'MMM yyyy' }}</span>
+                <div class="flex items-center justify-between border-b border-line pb-3">
+                  <dt class="text-muted">Updated</dt><dd class="text-ink">{{ project.updatedAt | date:'MMM yyyy' }}</dd>
                 </div>
-                <div class="flex justify-between items-center py-2 border-b border-gray-600/50">
-                  <span class="text-gray-300">Updated</span>
-                  <span class="font-medium text-white">{{ project.updatedAt | date:'MMM yyyy' }}</span>
+                <div class="flex items-center justify-between">
+                  <dt class="text-muted">Images</dt><dd class="text-ink">{{ project.images.length || 0 }}</dd>
                 </div>
-                <div class="flex justify-between items-center py-2">
-                  <span class="text-gray-300">Images</span>
-                  <span class="font-medium text-white">{{ project.images.length || 0 }}</span>
-                </div>
-              </div>
+              </dl>
             </div>
           </div>
         </div>
@@ -345,7 +223,7 @@ export interface ProjectDetails {
     
     .project-description li::before {
       content: "•";
-      color: #60a5fa;
+      color: #bef264;
       font-weight: bold;
       margin-right: 0.5rem;
       flex-shrink: 0;
@@ -400,7 +278,7 @@ export interface ProjectDetails {
     
     .project-description em {
       font-style: italic;
-      color: #93c5fd;
+      color: #a1a1aa;
     }
     
     .project-description blockquote {
@@ -439,12 +317,12 @@ export interface ProjectDetails {
     }
     
     .project-description a {
-      color: #60a5fa;
+      color: #bef264;
       text-decoration: underline;
     }
-    
+
     .project-description a:hover {
-      color: #93c5fd;
+      color: #d9f99d;
     }
 
     /* Custom scrollbar */

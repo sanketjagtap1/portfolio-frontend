@@ -1,224 +1,112 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { IconComponent } from '../ui/icon.component';
+import { BrandIconComponent } from '../ui/brand-icon.component';
 
 @Component({
   selector: 'app-about',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, IconComponent, BrandIconComponent],
   template: `
-    <section id="about" class="section bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 text-white relative overflow-hidden">
-      <!-- Background Pattern -->
-      <div class="absolute inset-0 opacity-10">
-        <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-sky-600/20 to-cyan-600/20"></div>
-        <div class="absolute top-20 left-20 w-72 h-72 bg-sky-500/10 rounded-full blur-3xl animate-pulse"></div>
-        <div class="absolute bottom-20 right-20 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
-        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl animate-pulse" style="animation-delay: 2s;"></div>
-      </div>
-      
-      <div class="container relative z-10 py-16">
-        <!-- Header Section -->
-        <div class="text-center mb-20" data-aos="fade-up">
-          <div class="inline-flex items-center gap-2 px-4 py-2 bg-sky-500/20 rounded-full text-sky-300 text-sm font-medium mb-6 border border-sky-400/30">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-              <circle cx="12" cy="7" r="4"/>
-            </svg>
-            About Me
-          </div>
-          <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-white via-sky-100 to-cyan-200 bg-clip-text text-transparent leading-tight">
-            About Me
+    <section id="about" class="section">
+      <div class="mx-auto max-w-shell px-6">
+        <!-- Heading -->
+        <div class="max-w-2xl" data-aos="fade-up">
+          <p class="kicker">01 — About</p>
+          <h2 class="mt-4 font-display text-3xl md:text-5xl font-semibold tracking-tightest text-ink leading-tight">
+            Full-stack development, delivered end to end.
           </h2>
-          <div class="w-24 h-1 bg-gradient-to-r from-sky-400 to-cyan-400 mx-auto rounded-full mb-8"></div>
-          <p class="text-lg md:text-xl text-sky-200 mt-8 max-w-4xl mx-auto leading-relaxed">
-            Passionate about creating scalable web applications with modern technologies
-          </p>
         </div>
-        
-        <div class="grid lg:grid-cols-2 gap-12 mb-16">
-          <div data-aos="fade-right">
-            <div class="mb-8">
-              <h3 class="text-2xl font-bold text-white mb-4">Passionate Full Stack Developer</h3>
-              <p class="text-lg text-sky-100 leading-relaxed">
-                I'm a dedicated Full Stack Developer with 4+ years of experience in designing, 
-                developing, and deploying scalable web and mobile applications. My expertise spans 
-                across modern technologies including Angular, Node.js, Flutter, and AWS.
-              </p>
-            </div>
-            
-            <div class="space-y-6">
-              <div class="group">
-                <div class="relative">
-                  <div class="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-sky-500/20 rounded-2xl blur-lg group-hover:blur-xl transition-all duration-500"></div>
-                  <div class="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-xl hover:shadow-blue-500/25 transition-all duration-500 hover:-translate-y-2 group-hover:border-blue-400/50">
-                    <div class="flex items-start gap-4">
-                      <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500 to-sky-600 rounded-xl flex items-center justify-center text-white shadow-lg">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                      </div>
-                      <div>
-                        <h4 class="text-lg font-semibold text-white mb-1">4+ Years Experience</h4>
-                        <p class="text-sm text-sky-200">Building scalable applications across various industries</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="group">
-                <div class="relative">
-                  <div class="absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-sky-500/20 rounded-2xl blur-lg group-hover:blur-xl transition-all duration-500"></div>
-                  <div class="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-xl hover:shadow-cyan-500/25 transition-all duration-500 hover:-translate-y-2 group-hover:border-cyan-400/50">
-                    <div class="flex items-start gap-4">
-                      <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-cyan-500 to-sky-600 rounded-xl flex items-center justify-center text-white shadow-lg">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                          <path d="M9 12l2 2 4-4"/>
-                          <path d="M21 12c-1 0-3-1-3-3s2-3 3-3 3 1 3 3-2 3-3 3"/>
-                          <path d="M3 12c1 0 3-1 3-3s-2-3-3-3-3 1-3 3 2 3 3 3"/>
-                          <path d="M12 3c0 1-1 3-3 3s-3-2-3-3 1-3 3-3 3 2 3 3"/>
-                          <path d="M12 21c0-1 1-3 3-3s3 2 3 3-1 3-3 3-3-2-3-3"/>
-                        </svg>
-                      </div>
-                      <div>
-                        <h4 class="text-lg font-semibold text-white mb-1">Full Stack Expertise</h4>
-                        <p class="text-sm text-sky-200">Frontend, Backend, Database, and Cloud technologies</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="group">
-                <div class="relative">
-                  <div class="absolute inset-0 bg-gradient-to-r from-green-500/20 to-blue-500/20 rounded-2xl blur-lg group-hover:blur-xl transition-all duration-500"></div>
-                  <div class="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-xl hover:shadow-green-500/25 transition-all duration-500 hover:-translate-y-2 group-hover:border-green-400/50">
-                    <div class="flex items-start gap-4">
-                      <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-green-500 to-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-                        </svg>
-                      </div>
-                      <div>
-                        <h4 class="text-lg font-semibold text-white mb-1">Performance Focused</h4>
-                        <p class="text-sm text-sky-200">Optimizing applications for speed and scalability</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+
+        <div class="mt-14 grid gap-10 lg:grid-cols-[1.4fr_1fr] lg:items-start">
+          <!-- Narrative -->
+          <div data-aos="fade-up">
+            <p class="text-lg leading-relaxed text-muted">
+              I'm a full-stack developer with <span class="text-ink">4+ years</span> of experience helping
+              companies design, build and launch scalable web &amp; mobile applications. My work spans
+              enterprise finance portals, real-time trading platforms and consumer mobile apps — across
+              Angular and React front-ends, Node.js back-ends, and Flutter.
+            </p>
+            <p class="mt-5 text-lg leading-relaxed text-muted">
+              I care about the things that make software worth paying for: clean architecture, real
+              performance, and the details that make a product feel fast and reliable — from database
+              schema to the last pixel. Work with me and you get clear communication, honest timelines,
+              and code your team can build on.
+            </p>
+
+            <!-- Highlight cards -->
+            <div class="mt-8 grid gap-3 sm:grid-cols-3">
+              <div *ngFor="let h of highlights" class="rounded-2xl border border-line bg-surface p-5">
+                <app-icon [name]="h.icon" [size]="20" class="text-accent"></app-icon>
+                <div class="mt-3 font-display text-lg font-semibold text-ink">{{ h.title }}</div>
+                <div class="mt-1 text-sm text-muted">{{ h.sub }}</div>
               </div>
             </div>
           </div>
-          
-          <div data-aos="fade-left">
-            <div class="grid grid-cols-2 gap-6 mb-8">
-              <div class="group">
-                <div class="relative">
-                  <div class="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-sky-500/20 rounded-xl blur-lg group-hover:blur-xl transition-all duration-500"></div>
-                  <div class="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-xl p-6 border border-white/20 shadow-xl hover:shadow-blue-500/25 transition-all duration-500 hover:-translate-y-2 group-hover:border-blue-400/50 text-center">
-                    <div class="text-3xl font-bold text-white mb-2">4+</div>
-                    <div class="text-sm text-sky-200 font-medium">Years Experience</div>
-                  </div>
-                </div>
+
+          <!-- Profile + achievements card -->
+          <div class="rounded-2xl border border-line bg-surface p-6" data-aos="fade-up">
+            <dl class="space-y-3">
+              <div *ngFor="let f of facts" class="flex items-center justify-between gap-4 border-b border-line pb-3 last:border-0 last:pb-0">
+                <dt class="font-mono text-xs uppercase tracking-[0.12em] text-faint">{{ f.k }}</dt>
+                <dd class="text-sm font-medium text-ink text-right">{{ f.v }}</dd>
               </div>
-              
-              <div class="group">
-                <div class="relative">
-                  <div class="absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-sky-500/20 rounded-xl blur-lg group-hover:blur-xl transition-all duration-500"></div>
-                  <div class="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-xl p-6 border border-white/20 shadow-xl hover:shadow-cyan-500/25 transition-all duration-500 hover:-translate-y-2 group-hover:border-cyan-400/50 text-center">
-                    <div class="text-3xl font-bold text-white mb-2">50+</div>
-                    <div class="text-sm text-sky-200 font-medium">Projects Completed</div>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="group">
-                <div class="relative">
-                  <div class="absolute inset-0 bg-gradient-to-r from-green-500/20 to-blue-500/20 rounded-xl blur-lg group-hover:blur-xl transition-all duration-500"></div>
-                  <div class="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-xl p-6 border border-white/20 shadow-xl hover:shadow-green-500/25 transition-all duration-500 hover:-translate-y-2 group-hover:border-green-400/50 text-center">
-                    <div class="text-3xl font-bold text-white mb-2">15+</div>
-                    <div class="text-sm text-sky-200 font-medium">Technologies</div>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="group">
-                <div class="relative">
-                  <div class="absolute inset-0 bg-gradient-to-r from-orange-500/20 to-red-500/20 rounded-xl blur-lg group-hover:blur-xl transition-all duration-500"></div>
-                  <div class="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-xl p-6 border border-white/20 shadow-xl hover:shadow-orange-500/25 transition-all duration-500 hover:-translate-y-2 group-hover:border-orange-400/50 text-center">
-                    <div class="text-3xl font-bold text-white mb-2">100%</div>
-                    <div class="text-sm text-sky-200 font-medium">Client Satisfaction</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div class="relative">
-              <div class="absolute inset-0 bg-gradient-to-r from-sky-500/20 to-cyan-500/20 rounded-2xl blur-xl"></div>
-              <div class="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-2xl p-8 border border-white/20 shadow-2xl">
-                <h4 class="text-lg font-semibold text-white mb-4">Key Achievements</h4>
-                <ul class="space-y-3">
-                  <li class="flex items-start gap-3">
-                    <span class="text-green-400 font-bold mt-0.5">✓</span>
-                    <span class="text-sm text-sky-200">Reduced processing time from 2 weeks to 2 days</span>
-                  </li>
-                  <li class="flex items-start gap-3">
-                    <span class="text-green-400 font-bold mt-0.5">✓</span>
-                    <span class="text-sm text-sky-200">Improved application performance by 40%</span>
-                  </li>
-                  <li class="flex items-start gap-3">
-                    <span class="text-green-400 font-bold mt-0.5">✓</span>
-                    <span class="text-sm text-sky-200">Led teams of 4+ developers</span>
-                  </li>
-                  <li class="flex items-start gap-3">
-                    <span class="text-green-400 font-bold mt-0.5">✓</span>
-                    <span class="text-sm text-sky-200">Built microservices architecture</span>
-                  </li>
-                  <li class="flex items-start gap-3">
-                    <span class="text-green-400 font-bold mt-0.5">✓</span>
-                    <span class="text-sm text-sky-200">Implemented CI/CD pipelines</span>
-                  </li>
-                </ul>
-              </div>
+            </dl>
+
+            <div class="mt-6 border-t border-line pt-5">
+              <h4 class="font-mono text-xs uppercase tracking-[0.12em] text-faint">Key achievements</h4>
+              <ul class="mt-3 space-y-2.5">
+                <li *ngFor="let a of achievements" class="flex items-start gap-2.5 text-sm text-muted">
+                  <app-icon name="check" [size]="16" class="mt-0.5 shrink-0 text-accent"></app-icon>
+                  <span>{{ a }}</span>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
-        
-        <div class="text-center" data-aos="fade-up">
-          <h3 class="text-2xl font-semibold text-white mb-8">Technologies I Work With</h3>
-          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6 max-w-4xl mx-auto">
-            <div class="group" *ngFor="let tech of technologies">
-              <div class="relative">
-                <div class="absolute inset-0 bg-gradient-to-r from-sky-500/20 to-cyan-500/20 rounded-xl blur-lg group-hover:blur-xl transition-all duration-500"></div>
-                <div class="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-xl p-6 border border-white/20 shadow-xl hover:shadow-sky-500/25 transition-all duration-500 hover:-translate-y-2 group-hover:border-sky-400/50 flex flex-col items-center gap-3">
-                  <div class="text-2xl">{{ tech.emoji }}</div>
-                  <span class="text-sm font-medium text-sky-200">{{ tech.name }}</span>
-                </div>
-              </div>
+
+        <!-- Tech grid -->
+        <div class="mt-16" data-aos="fade-up">
+          <h3 class="font-mono text-xs uppercase tracking-[0.15em] text-faint">Technologies I work with</h3>
+          <div class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+            <div *ngFor="let t of technologies"
+                 class="flex items-center gap-3 rounded-xl border border-line bg-surface px-4 py-3 transition-colors hover:border-ink/25">
+              <app-brand-icon [key]="t" [label]="t" [box]="38"></app-brand-icon>
+              <span class="text-sm font-medium text-ink">{{ t }}</span>
             </div>
           </div>
         </div>
       </div>
     </section>
   `,
-  styles: []
+  styles: [],
 })
-export class AboutComponent implements OnInit {
-  technologies = [
-    { name: 'Angular', emoji: '🅰️' },
-    { name: 'Node.js', emoji: '🟢' },
-    { name: 'TypeScript', emoji: '🔷' },
-    { name: 'JavaScript', emoji: '🟨' },
-    { name: 'AWS', emoji: '☁️' },
-    { name: 'PostgreSQL', emoji: '🐘' },
-    { name: 'MongoDB', emoji: '🍃' },
-    { name: 'Redis', emoji: '🔴' },
-    { name: 'Docker', emoji: '🐳' },
-    { name: 'Git', emoji: '📦' },
-    { name: 'Express.js', emoji: '⚡' },
-    { name: 'Ionic', emoji: '📱' }
+export class AboutComponent {
+  highlights = [
+    { icon: 'layers', title: 'Full-stack', sub: 'Frontend, backend, database & cloud' },
+    { icon: 'gauge', title: 'Performance', sub: 'Fast, optimized, reliable systems' },
+    { icon: 'smartphone', title: 'Web & mobile', sub: 'Angular, React & Flutter' },
   ];
 
-  ngOnInit() {
-    // Component initialization
-  }
+  facts = [
+    { k: 'Location', v: 'Pune, India' },
+    { k: 'Experience', v: '4+ years' },
+    { k: 'Education', v: 'M.Sc. Computer Science' },
+    { k: 'Focus', v: 'Web & Mobile' },
+    { k: 'Availability', v: 'Freelance & full-time' },
+  ];
+
+  achievements = [
+    'Cut a batch processing pipeline from 2 weeks to 2 days',
+    'Improved application performance by ~40%',
+    'Led and mentored teams of 4+ developers',
+    'Designed and shipped microservices architectures',
+    'Set up CI/CD pipelines and automated deployments',
+  ];
+
+  technologies = [
+    'Angular', 'React', 'Node.js', 'TypeScript',
+    'Flutter', 'Python', 'PostgreSQL', 'MongoDB',
+    'Redis', 'Docker', 'AWS', 'Git',
+  ];
 }
